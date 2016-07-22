@@ -12,8 +12,28 @@
     tools:context="com.example.hanbyeol.sure_park.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <TextView
+    <SearchView
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:id="@+id/searchView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
+    <ImageView
+        android:layout_width="400dp"
+        android:layout_height="300dp"
+        android:id="@+id/imageView2"
+        android:layout_below="@+id/searchView"
+        android:src="@mipmap/ic_launcher"
+        />
+
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="New Button"
+        android:id="@+id/button01"
+        android:layout_below="@+id/imageView2"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>
