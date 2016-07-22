@@ -103,8 +103,8 @@ public class MainActivity extends AppCompatActivity
                 ByteArrayOutputStream baos = null;
 
                 conn = (HttpURLConnection)url.openConnection();
-                conn.setConnectTimeout(60);
-                conn.setReadTimeout(60);
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Cache-Control", "no-cache");
                 conn.setRequestProperty("Content-Type", "application/json");
