@@ -83,8 +83,7 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
         @Override
         public String doInBackground(String... params) {
             try {
-                String address = "http://172.16.30.206:8080/surepark-restful/reservations/"+MainActivity.rev_id;
-                URL url = new URL(address);
+                URL url = new URL(MainActivity.address+"reservations/"+MainActivity.rev_id);
                 HttpURLConnection   conn    = null;
                 OutputStream          os   = null;
                 InputStream           is   = null;
@@ -148,11 +147,6 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
             text_revid.setText(Integer.toString(rev_id));
             text_carsize.setText(Integer.toString(car_size));
             text_locid.setText(loc_id);
-
-            /*
-            text_email.setText(e_mail);
-            text_phonenum.setText(phonenum);
-            */
         }
     }
 
@@ -160,8 +154,7 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
         @Override
         public String doInBackground(String... params) {
             try {
-                String address = "http://172.16.30.206:8080/surepark-restful/reservations/"+MainActivity.rev_id;
-                URL url = new URL(address);
+                URL url = new URL(MainActivity.address+"reservations/"+MainActivity.rev_id);
                 HttpURLConnection   conn    = null;
                 OutputStream          os   = null;
                 InputStream           is   = null;
@@ -257,8 +250,7 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
         @Override
         public Void doInBackground(String... params) {
             try {
-                String address = "http://172.16.30.206:8080/surepark-restful/drivers";
-                URL url = new URL(address);
+                URL url = new URL(MainActivity.address+"drivers");
                 HttpURLConnection   conn    = null;
 
                 OutputStream          os   = null;

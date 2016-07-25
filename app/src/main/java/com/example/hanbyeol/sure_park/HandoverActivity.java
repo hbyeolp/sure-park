@@ -78,7 +78,7 @@ public class HandoverActivity extends AppCompatActivity implements View.OnClickL
         @Override
         public String doInBackground(String... params) {
             try {
-                URL url = new URL("http://172.16.30.206:8080/surepark-restful/drivers/handover/" + MainActivity.phoneNum);
+                URL url = new URL(MainActivity.address+"drivers/handover/" + MainActivity.phoneNum);
                 HttpURLConnection conn    = null;
                 OutputStream os   = null;
                 InputStream is   = null;
@@ -149,6 +149,7 @@ public class HandoverActivity extends AppCompatActivity implements View.OnClickL
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // 'YES'
+                                handoverResult="fail";
                                 HttpPostLogin postLogin = new HttpPostLogin();
                                 postLogin.execute();
                                 System.out.println(MainActivity.status);
@@ -174,12 +175,12 @@ public class HandoverActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+
     public class HttpPostLogin extends AsyncTask<String, Void, Void> {
         @Override
         public Void doInBackground(String... params) {
             try {
-                String address = "http://172.16.30.206:8080/surepark-restful/drivers";
-                URL url = new URL(address);
+                URL url = new URL(MainActivity.address+"drivers");
                 HttpURLConnection   conn    = null;
 
                 OutputStream          os   = null;
@@ -222,14 +223,12 @@ public class HandoverActivity extends AppCompatActivity implements View.OnClickL
                     byteData = baos.toByteArray();
 
                     response = new String(byteData);
-                    System.out.println(response);
 
                     JSONObject responseJSON = new JSONObject(response);
                     String user_status = (String) responseJSON.get("driverRegistration");
                     MainActivity.phoneNum = (String) responseJSON.get("phoneNumber");
                     MainActivity.id = (String) responseJSON.get("identificationNumber");
                     MainActivity.status = (String) responseJSON.get("state");
-
                 }
 
             } catch (Exception e) {

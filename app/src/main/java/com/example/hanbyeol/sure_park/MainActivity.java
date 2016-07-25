@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
@@ -40,12 +39,13 @@ public class MainActivity extends AppCompatActivity
     HttpPostOauth postOauth;
     HttpGetList gethttp;
     public static String secret_k="surepark";
+    public static String address = "http://172.16.30.206:8080/surepark-restful/";
     private static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 1;
     private static final int MY_PERMISSIONS_REQUEST_CALENDAR = 1;
     public static String phoneNum;
     public static String access_token, token_type;
     public static String ioc_id="1", rev_id, status="";
-    public static String id;
+    public static String id, parkinglotname;
     JSONArray sureparks;
     int ct;
     String[] loc_ids;
@@ -66,8 +66,21 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                if(status.equals("reserved") || status.equals("parked")) {
+                    Intent intent = new Intent(MainActivity.this, HandoverActivity.class);
+                    startActivity(intent);
+                }else{
+                    AlertDialog.Builder alert_confirm = new AlertDialog.Builder(MainActivity.this);
+                    alert_confirm.setMessage("Please, Make a Reservation").setCancelable(false).setPositiveButton("Confirm",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+                    AlertDialog alert = alert_confirm.create();
+                    alert.show();
+                }
             }
         });
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -159,8 +172,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public Void doInBackground(String... params) {
             try {
-                String address = "http://172.16.30.206:8080/surepark-restful/drivers";
-                URL url = new URL(address);
+                URL url = new URL(address+"drivers");
                 HttpURLConnection   conn    = null;
 
                 OutputStream          os   = null;
@@ -226,9 +238,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public Void doInBackground(String... params) {
             try {
-
-                String address = "http://172.16.30.206:8080/surepark-restful/oauth/token";
-                URL url = new URL(address);
+                URL url = new URL(address+"oauth/token");
                 HttpURLConnection   conn    = null;
                 OutputStream          os   = null;
                 InputStream           is   = null;
@@ -297,8 +307,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public String doInBackground(String... params) {
             try {
-                String address = "http://172.16.30.206:8080/surepark-restful/sureparks/list";
-                URL url = new URL(address);
+                URL url = new URL(address+"sureparks/list");
                 HttpURLConnection   conn    = null;
                 OutputStream          os   = null;
                 InputStream           is   = null;
@@ -363,9 +372,9 @@ public class MainActivity extends AppCompatActivity
             for(int i=0;i<ct;i++){
                 try {
                     JSONObject json = sureparks.getJSONObject(i);
-                    String name = (String) json.get("parkingLotName");
+                    parkinglotname = (String) json.get("parkingLotName");
                     loc_ids[i] = (String) json.get("parkingLotID");
-                    m_Adapter.add(name+"    ID : "+ loc_ids[i]);
+                    m_Adapter.add(parkinglotname+"    ID : "+ loc_ids[i]);
 
                 } catch (JSONException e) {
                     e.printStackTrace();

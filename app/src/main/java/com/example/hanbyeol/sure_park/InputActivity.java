@@ -60,7 +60,10 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         edit_card_lastname = (EditText)findViewById(R.id.input_lastname);
         edit_phone=(EditText) findViewById(R.id.input_phone);
         edit_date=(EditText) findViewById(R.id.input_date);
-
+        edit_phone.setFocusable(false);
+        edit_phone.setClickable(false);
+        edit_date.setFocusable(false);
+        edit_date.setClickable(false);
         Button btncardcheck=(Button)findViewById(R.id.button_cardchek);
         btncardcheck.setOnClickListener(this);
         Button btnrev=(Button)findViewById(R.id.button_reserve);
@@ -69,6 +72,8 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         RevTime();
         Spinner time = (Spinner)findViewById(R.id.input_time);
         Spinner size = (Spinner)findViewById(R.id.input_carsize);
+        time.setPrompt("Time");
+        size.setPrompt("Car Size");
         time.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
@@ -282,7 +287,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         @Override
         public String doInBackground(String... params) {
             try {
-                URL url = new URL("http://172.16.30.206:8080/surepark-restful/cardvalidate");
+                URL url = new URL(MainActivity.address+"cardvalidate");
                 HttpURLConnection conn    = null;
 
                 OutputStream os   = null;
@@ -352,6 +357,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // 'YES'
+                                cardResult="fail";
                                 available_card=1;
                             }
                         });
@@ -387,7 +393,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         @Override
         public String doInBackground(String... params) {
             try {
-                URL url = new URL("http://172.16.30.206:8080/surepark-restful/reservations");
+                URL url = new URL(MainActivity.address+"reservations");
                 HttpURLConnection conn    = null;
 
                 OutputStream os   = null;
@@ -462,6 +468,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // 'YES'
+                                revResult="fail";
                                 HttpPostLogin postLogin = new HttpPostLogin();
                                 postLogin.execute();
                                 available_card=0;
@@ -490,8 +497,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         @Override
         public Void doInBackground(String... params) {
             try {
-                String address = "http://172.16.30.206:8080/surepark-restful/drivers";
-                URL url = new URL(address);
+                URL url = new URL(MainActivity.address+"drivers");
                 HttpURLConnection   conn    = null;
 
                 OutputStream          os   = null;

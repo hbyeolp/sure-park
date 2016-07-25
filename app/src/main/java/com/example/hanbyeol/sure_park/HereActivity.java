@@ -60,7 +60,7 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public String doInBackground(String... params) {
             try {
-                URL url = new URL("http://172.16.30.206:8080/surepark-restful/opengate/" + MainActivity.phoneNum);
+                URL url = new URL(MainActivity.address+"opengate/" + MainActivity.phoneNum);
                 HttpURLConnection   conn    = null;
                 OutputStream          os   = null;
                 InputStream           is   = null;
@@ -124,6 +124,7 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // 'YES'
+                                gateresult="fail";
                                 HttpPostLogin postLogin = new HttpPostLogin();
                                 postLogin.execute();
                                 finish();
@@ -146,12 +147,12 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
+
     public class HttpPostLogin extends AsyncTask<String, Void, Void> {
         @Override
         public Void doInBackground(String... params) {
             try {
-                String address = "http://172.16.30.206:8080/surepark-restful/drivers";
-                URL url = new URL(address);
+                URL url = new URL(MainActivity.address+"drivers");
                 HttpURLConnection   conn    = null;
 
                 OutputStream          os   = null;
