@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.hanbyeol.sure_park.HandoverActivity"
+    tools:showIn="@layout/activity_handover"
+    android:weightSum="1">
+
+    <ImageButton
+        android:layout_width="154dp"
+        android:layout_height="154dp"
+        android:id="@+id/button_handover"
+        android:layout_gravity="center" />
+
+    <EditText
+        android:layout_width="328dp"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:ems="10"
+        android:id="@+id/Input_handover_phonnum"
+        android:hint="phone number for handover"
+        android:layout_gravity="center_horizontal|top" />
+
+</FrameLayout>

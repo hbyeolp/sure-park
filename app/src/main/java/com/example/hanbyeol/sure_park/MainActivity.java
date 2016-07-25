@@ -2,55 +2,54 @@ package com.example.hanbyeol.sure_park;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-
-import static android.provider.ContactsContract.*;
-import static android.provider.ContactsContract.CommonDataKinds.*;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
     HttpPostLogin postlogin;
     HttpPostOauth postOauth;
-    HttpGet gethttp;
+    HttpGetList gethttp;
+    public static String secret_k="surepark";
     private static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 1;
-    private static final int MY_PERMISSIONS_INTERNET=1;
-    String phoneNum;
-    String access_token;
-    String id;
-    String token_type;
+    private static final int MY_PERMISSIONS_REQUEST_CALENDAR = 1;
+    public static String phoneNum;
+    public static String access_token, token_type;
+    public static String ioc_id="1", rev_id, status="";
+    public static String id;
+    JSONArray sureparks;
+    int ct;
+    String[] loc_ids;
+    ArrayAdapter<String> m_Adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,25 +62,31 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        ListView listview = (ListView)findViewById(R.id.listView);
+        m_Adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1);
+        listview.setAdapter(m_Adapter);
+        m_Adapter.add("example");
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                                    Intent myIntent = new Intent(MainActivity.this, InputActivity.class);
+                                                    startActivity(myIntent);
 
-        Button btnApple=(Button)findViewById(R.id.button01);
-        btnApple.setOnClickListener(this);
-
+                                                }
+                                            });
         checkPermissionPhone();
     }
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.button01:
-                Intent intent = new Intent(getApplicationContext(), InputActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-        }
-    }
-    private void checkPermissionPhone() {
+
+        private void checkPermissionPhone() {
         if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE)
                 != PackageManager.PERMISSION_GRANTED) {
             // Should we show an explanation?
@@ -99,7 +104,7 @@ public class MainActivity extends AppCompatActivity
             postlogin.execute();
             postOauth = new HttpPostOauth();
             postOauth.execute();
-            gethttp= new HttpGet();
+            gethttp= new HttpGetList();
             gethttp.execute();
         }
     }
@@ -119,16 +124,33 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_main) {
+        System.out.println(status);
+        if (id == R.id.nav_rc) {
             // Handle the camera action
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
-            finish();
-        } else if (id == R.id.nav_rc) {
+            if(status.equals("reserved") || status.equals("parked") || status.equals("paying")) {
+                Intent intent = new Intent(MainActivity.this, RcActivity.class);
+                startActivity(intent);
+            }
+            else{
 
+            }
         }
+        if(id == R.id.nav_handover){
+            if(status.equals("reserved") || status.equals("parked")) {
+                Intent intent = new Intent(MainActivity.this, HandoverActivity.class);
+                startActivity(intent);
+            }else{
 
+            }
+        }
+        if(id==R.id.nav_here){
+            if(status.equals("reserved") || status.equals("parked")) {
+                Intent intent = new Intent(MainActivity.this, HereActivity.class);
+                startActivity(intent);
+            }else{
+
+            }
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -137,7 +159,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public Void doInBackground(String... params) {
             try {
-                String address = "http://172.16.30.181:8080/surepark-restful/users/";
+                String address = "http://172.16.30.206:8080/surepark-restful/drivers";
                 URL url = new URL(address);
                 HttpURLConnection   conn    = null;
 
@@ -156,10 +178,11 @@ public class MainActivity extends AppCompatActivity
 
                 TelephonyManager telManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
                 phoneNum = telManager.getLine1Number();
-                String secret_k="surepark";
+
                 JSONObject json = new JSONObject();
-                json.put("user_phoneNumber", phoneNum);
-                json.put("secret_key", secret_k);
+                json.put("phoneNumber", phoneNum);
+                json.put("secretKey", secret_k);
+
                 os = conn.getOutputStream();
                 os.write(json.toString().getBytes());
                 os.flush();
@@ -184,9 +207,10 @@ public class MainActivity extends AppCompatActivity
                     response = new String(byteData);
 
                     JSONObject responseJSON = new JSONObject(response);
-                    String user_status = (String) responseJSON.get("user_registration");
-                    String phonenum = (String) responseJSON.get("user_phoneNumber");
-                    id = (String) responseJSON.get("user_identification Number");
+                    String user_status = (String) responseJSON.get("driverRegistration");
+                    phoneNum = (String) responseJSON.get("phoneNumber");
+                    id = (String) responseJSON.get("identificationNumber");
+                    status = (String) responseJSON.get("state");
                 }
 
             } catch (Exception e) {
@@ -203,7 +227,7 @@ public class MainActivity extends AppCompatActivity
         public Void doInBackground(String... params) {
             try {
 
-                String address = "http://172.16.30.181:8080/surepark-restful/oauth/token";
+                String address = "http://172.16.30.206:8080/surepark-restful/oauth/token";
                 URL url = new URL(address);
                 HttpURLConnection   conn    = null;
                 OutputStream          os   = null;
@@ -269,11 +293,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public class HttpGet extends AsyncTask<String, Void, Void> {
+    public class HttpGetList extends AsyncTask<String, Void, String> {
         @Override
-        public Void doInBackground(String... params) {
+        public String doInBackground(String... params) {
             try {
-                String address = "http://172.16.30.181:8080/surepark-restful/users/"+phoneNum;
+                String address = "http://172.16.30.206:8080/surepark-restful/sureparks/list";
                 URL url = new URL(address);
                 HttpURLConnection   conn    = null;
                 OutputStream          os   = null;
@@ -288,6 +312,8 @@ public class MainActivity extends AppCompatActivity
                 conn.setRequestProperty("Accept", "application/json");
                 conn.setDoInput(true);
                 conn.connect();
+
+                System.out.println("=========================");
 
                 String response;
 
@@ -308,15 +334,18 @@ public class MainActivity extends AppCompatActivity
                     response = new String(byteData);
 
                     JSONObject responseJSON = new JSONObject(response);
+                    sureparks = responseJSON.getJSONArray("sureparks");
+                    String count = (String) responseJSON.get("count");
+                    ct = Integer.parseInt(count);
+                    System.out.println(response);
 
-                    String user_phone = (String) responseJSON.get("user_phoneNumber");
 
                 } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
                     System.out.println("FOBIDDEN");
                 } else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){
                     System.out.println("UNAUTHORIZED");
                 }
-
+                conn.disconnect();
             } catch (Exception e) {
                 System.out.println("error");
                 e.printStackTrace();
@@ -324,6 +353,24 @@ public class MainActivity extends AppCompatActivity
 
             return null;
 
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            loc_ids = new String[ct];
+            for(int i=0;i<ct;i++){
+                try {
+                    JSONObject json = sureparks.getJSONObject(i);
+                    String name = (String) json.get("parkingLotName");
+                    loc_ids[i] = (String) json.get("parkingLotID");
+                    m_Adapter.add(name+"    ID : "+ loc_ids[i]);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
