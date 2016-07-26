@@ -17,4 +17,5 @@
     <string name="title_activity_here">HereActivity</string>
     <string name="title_activity_handover">HandoverActivity</string>
     <string name="title_activity_record_card">RecordCardActivity</string>
+    <string name="title_activity_past_rc">PastRcActivity</string>
 </resources>

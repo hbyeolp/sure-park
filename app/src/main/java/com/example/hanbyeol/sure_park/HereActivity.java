@@ -130,6 +130,8 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
                                 postLogin.execute();
                                 HttpPostOauth postOauth = new HttpPostOauth();
                                 postOauth.execute();
+                                HttpGetState getState = new HttpGetState();
+                                getState.execute();
                                 finish();
                             }
                         });
@@ -281,6 +283,68 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             return null;
+
+        }
+    }
+
+    public class HttpGetState extends AsyncTask<String, Void, String> {
+        @Override
+        public String doInBackground(String... params) {
+            try {
+                URL url = new URL(MainActivity.address+"drivers/"+MainActivity.phoneNum);
+                HttpURLConnection   conn    = null;
+                OutputStream          os   = null;
+                InputStream           is   = null;
+                ByteArrayOutputStream baos = null;
+                conn = (HttpURLConnection)url.openConnection();
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(10000);
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Authorization", MainActivity.token_type+" "+ MainActivity.access_token);
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoInput(true);
+                conn.connect();
+
+                String response;
+
+                int responseCode = conn.getResponseCode();
+                if(responseCode == HttpURLConnection.HTTP_OK) {
+
+                    is = conn.getInputStream();
+                    baos = new ByteArrayOutputStream();
+                    byte[] byteBuffer = new byte[1024];
+                    byte[] byteData = null;
+                    int nLength = 0;
+                    while((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
+                        baos.write(byteBuffer, 0, nLength);
+                    }
+                    byteData = baos.toByteArray();
+
+                    response = new String(byteData);
+
+                    JSONObject responseJSON = new JSONObject(response);
+
+                    MainActivity.rev_id = (String) responseJSON.get("reservationID");
+                    MainActivity.phoneNum = (String) responseJSON.get("phoneNumber");
+                    MainActivity.status = (String) responseJSON.get("state");
+
+                } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
+                    System.out.println("FOBIDDEN");
+                } else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){
+                    System.out.println("UNAUTHORIZED");
+                }
+                conn.disconnect();
+            } catch (Exception e) {
+                System.out.println("error");
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
 
         }
     }

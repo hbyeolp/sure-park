@@ -22,7 +22,7 @@ public class MySQLiteOpenHelperReservation extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        String sql = "drop table if exists reservation summary;";
+        String sql = "drop table if exists reservation summary";
         db.execSQL(sql);
         onCreate(db);
     }

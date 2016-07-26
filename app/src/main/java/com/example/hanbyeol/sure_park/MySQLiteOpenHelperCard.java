@@ -16,7 +16,7 @@ public class MySQLiteOpenHelperCard extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String sql = "create table card summary" +
                 "(_id integer primary key autoincrement," +
-                "cardHolder text, cardNumber text, card text, cardExpirationMonth text, cardExpirationYear text, cardValidationCode text);";
+                "cardNumber text, cardHolder text, cardExpirationMonth text, cardExpirationYear text, cardValidationCode text);";
         db.execSQL(sql);
     }
 

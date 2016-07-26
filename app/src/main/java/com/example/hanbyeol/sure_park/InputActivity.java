@@ -1,6 +1,8 @@
 package com.example.hanbyeol.sure_park;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -493,7 +496,11 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                                 revResult="fail";
                                 HttpPostLogin postLogin = new HttpPostLogin();
                                 postLogin.execute();
+                                HttpGetState getState = new HttpGetState();
+                                getState.execute();
                                 available_card=0;
+                                CardInsert(cardnum, cardname, cardmon, cardyear, cardcode);
+                                ReservationInsert(MainActivity.rev_id, MainActivity.parkinglotname, MainActivity.ioc_id, re_time, car_size, e_mail, MainActivity.phoneNum);
                                 finish();
                             }
                         });
@@ -576,6 +583,172 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             }
 
             return null;
+
+        }
+    }
+
+    void CardDelete(String cardNumber) {
+        int result = card_db.delete(tablecardName, "cardNumber=?", new String[] {cardNumber});
+        CardSelect(); // delete 후에 select 하도록
+    }
+
+    void CardUpdate (String cardNumber, String cardHolder, String cardExpirationMonth, String cardExpirationYear, String cardValidationCode) {
+        ContentValues values = new ContentValues();
+        values.put("cardHolder", cardHolder);         // 바꿀값
+        values.put("cardExpirationMonth", cardExpirationMonth); // 바꿀값
+        values.put("cardExpirationYear", cardExpirationYear); // 바꿀값
+        values.put("cardValidationCode", cardValidationCode); // 바꿀값
+
+        int result = card_db.update(tablecardName,
+                values,    // 뭐라고 변경할지 ContentValues 설정
+                "cardNumber=?", // 바꿀 항목을 찾을 조건절
+                new String[]{cardNumber});// 바꿀 항목으로 찾을 값 String 배열
+        CardSelect (); // 업데이트 후에 조회하도록
+    }
+
+    void CardSelect () {
+        Cursor c = card_db.query(tablecardName, null, null, null, null, null, null);
+        while(c.moveToNext()) {
+            int _id = c.getInt(0);
+            String cardNumber = c.getString(1);
+            String cardHolder = c.getString(2);
+            String cardExpirationMonth = c.getString(3);
+            String cardExpirationYear = c.getString(4);
+            String cardValidationCode = c.getString(5);
+
+            // 키보드 내리기
+            InputMethodManager imm =
+                    (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow
+                    (getCurrentFocus().getWindowToken(), 0);
+        }
+    }
+
+    void CardInsert (String cardNumber, String cardHolder, String cardExpirationMonth, String cardExpirationYear, String cardValidationCode) {
+        ContentValues values = new ContentValues();
+        // 키,값의 쌍으로 데이터 입력
+        values.put("cardNumber", cardNumber);
+        values.put("cardHolder", cardHolder);
+        values.put("cardExpirationMonth", cardExpirationMonth);
+        values.put("cardExpirationYear", cardExpirationYear);
+        values.put("cardValidationCode", cardValidationCode);
+
+        long result = card_db.insert(tablecardName, null, values);
+        CardSelect(); // insert 후에 select 하도록
+    }
+
+    void ReservationDelete(String reservationid) {
+        int result = reservation_db.delete(tablecreservationName, "reservationID=?", new String[] {reservationid});
+        CardSelect(); // delete 후에 select 하도록
+    }
+
+    void ReservationUpdate (String reservationid, String parkinglotname, String parkinglotid, String reservationtime, String carsize, String email, String phonenumber) {
+        ContentValues values = new ContentValues();
+        values.put("parkinglotname", parkinglotname);         // 바꿀값
+        values.put("parkinglotid", parkinglotid); // 바꿀값
+        values.put("reservationtime", reservationtime); // 바꿀값
+        values.put("carsize", carsize); // 바꿀값
+        values.put("email", email); // 바꿀값
+        values.put("phonenumber", phonenumber); // 바꿀값
+
+        int result = reservation_db.update(tablecreservationName,
+                values,    // 뭐라고 변경할지 ContentValues 설정
+                "reservationid=?", // 바꿀 항목을 찾을 조건절
+                new String[]{reservationid});// 바꿀 항목으로 찾을 값 String 배열
+        CardSelect (); // 업데이트 후에 조회하도록
+    }
+
+    void ReservationSelect () {
+        Cursor c = reservation_db.query(tablecreservationName, null, null, null, null, null, null);
+        while(c.moveToNext()) {
+            int _id = c.getInt(0);
+            String cardNumber = c.getString(1);
+            String cardHolder = c.getString(2);
+            String cardExpirationMonth = c.getString(3);
+            String cardExpirationYear = c.getString(4);
+            String cardValidationCode = c.getString(5);
+
+            // 키보드 내리기
+            InputMethodManager imm =
+                    (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow
+                    (getCurrentFocus().getWindowToken(), 0);
+        }
+    }
+
+    void ReservationInsert (String reservationid, String parkinglotname, String parkinglotid, String reservationtime, String carsize, String email, String phonenumber) {
+        ContentValues values = new ContentValues();
+        // 키,값의 쌍으로 데이터 입력
+        values.put("reservationid", reservationid);
+        values.put("parkinglotname", parkinglotname);
+        values.put("parkinglotid", parkinglotid);
+        values.put("reservationtime", reservationtime);
+        values.put("carsize", carsize);
+        values.put("email", email);
+        values.put("phonenumber", phonenumber);
+
+        long result = reservation_db.insert(tablecreservationName, null, values);
+        CardSelect(); // insert 후에 select 하도록
+    }
+
+    public class HttpGetState extends AsyncTask<String, Void, String> {
+        @Override
+        public String doInBackground(String... params) {
+            try {
+                URL url = new URL(MainActivity.address+"drivers/"+MainActivity.phoneNum);
+                HttpURLConnection   conn    = null;
+                OutputStream          os   = null;
+                InputStream           is   = null;
+                ByteArrayOutputStream baos = null;
+                conn = (HttpURLConnection)url.openConnection();
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(10000);
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Authorization", MainActivity.token_type+" "+ MainActivity.access_token);
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoInput(true);
+                conn.connect();
+
+                String response;
+
+                int responseCode = conn.getResponseCode();
+                if(responseCode == HttpURLConnection.HTTP_OK) {
+
+                    is = conn.getInputStream();
+                    baos = new ByteArrayOutputStream();
+                    byte[] byteBuffer = new byte[1024];
+                    byte[] byteData = null;
+                    int nLength = 0;
+                    while((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
+                        baos.write(byteBuffer, 0, nLength);
+                    }
+                    byteData = baos.toByteArray();
+
+                    response = new String(byteData);
+
+                    JSONObject responseJSON = new JSONObject(response);
+
+                    MainActivity.rev_id = (String) responseJSON.get("reservationID");
+                    MainActivity.phoneNum = (String) responseJSON.get("phoneNumber");
+                    MainActivity.status = (String) responseJSON.get("state");
+
+                } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
+                    System.out.println("FOBIDDEN");
+                } else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){
+                    System.out.println("UNAUTHORIZED");
+                }
+                conn.disconnect();
+            } catch (Exception e) {
+                System.out.println("error");
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
 
         }
     }

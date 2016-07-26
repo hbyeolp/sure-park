@@ -33,12 +33,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     HttpPostLogin postlogin;
     HttpPostOauth postOauth;
-    HttpGetList gethttp;
+    HttpGetList getList;
+    HttpGetState getState;
     public static String secret_k="surepark";
     public static String address = "http://128.237.170.96:8080/surepark-restful/";
     private static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 1;
@@ -133,8 +136,10 @@ public class MainActivity extends AppCompatActivity
             postlogin.execute();
             postOauth = new HttpPostOauth();
             postOauth.execute();
-            gethttp= new HttpGetList();
-            gethttp.execute();
+            getList= new HttpGetList();
+            getList.execute();
+            getState = new HttpGetState();
+            getState.execute();
         }
     }
 
@@ -179,6 +184,10 @@ public class MainActivity extends AppCompatActivity
             }else{
 
             }
+        }
+        if(id==R.id.nav_past_rc){
+            Intent intent = new Intent(MainActivity.this, PastRcActivity.class);
+            startActivity(intent);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -239,8 +248,6 @@ public class MainActivity extends AppCompatActivity
                     String user_status = (String) responseJSON.get("driverRegistration");
                     phoneNum = (String) responseJSON.get("phoneNumber");
                     id = (String) responseJSON.get("identificationNumber");
-                    status = (String) responseJSON.get("state");
-                    rev_id = (String) responseJSON.get("reservationID");
                 }
 
             } catch (Exception e) {
@@ -398,6 +405,67 @@ public class MainActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
             }
+        }
+    }
+    public class HttpGetState extends AsyncTask<String, Void, String> {
+        @Override
+        public String doInBackground(String... params) {
+            try {
+                URL url = new URL(address+"drivers/"+phoneNum);
+                HttpURLConnection   conn    = null;
+                OutputStream          os   = null;
+                InputStream           is   = null;
+                ByteArrayOutputStream baos = null;
+                conn = (HttpURLConnection)url.openConnection();
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(10000);
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Authorization", token_type+" "+ access_token);
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoInput(true);
+                conn.connect();
+
+                String response;
+
+                int responseCode = conn.getResponseCode();
+                if(responseCode == HttpURLConnection.HTTP_OK) {
+
+                    is = conn.getInputStream();
+                    baos = new ByteArrayOutputStream();
+                    byte[] byteBuffer = new byte[1024];
+                    byte[] byteData = null;
+                    int nLength = 0;
+                    while((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
+                        baos.write(byteBuffer, 0, nLength);
+                    }
+                    byteData = baos.toByteArray();
+
+                    response = new String(byteData);
+
+                    JSONObject responseJSON = new JSONObject(response);
+
+                    rev_id = (String) responseJSON.get("reservationID");
+                    phoneNum = (String) responseJSON.get("phoneNumber");
+                    status = (String) responseJSON.get("state");
+
+                } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
+                    System.out.println("FOBIDDEN");
+                } else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){
+                    System.out.println("UNAUTHORIZED");
+                }
+                conn.disconnect();
+            } catch (Exception e) {
+                System.out.println("error");
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
         }
     }
 }
