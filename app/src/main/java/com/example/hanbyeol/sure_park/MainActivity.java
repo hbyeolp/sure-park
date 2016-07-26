@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity
     int ct;
     String[] loc_ids;
     ArrayAdapter<String> m_Adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

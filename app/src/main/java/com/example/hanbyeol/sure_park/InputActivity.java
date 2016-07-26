@@ -1,6 +1,7 @@
 package com.example.hanbyeol.sure_park;
 
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -42,6 +43,15 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     String e_mail, re_time, car_size, cardmon, cardnum, cardyear, cardcode, cardname;
     String[] revtime;
     int available_card=0;
+
+    String carddbName = "st_file_card.db", reservationdbName="st_file_reservation.db";
+    int dbVersion = 1;
+    private MySQLiteOpenHelperCard helperCard;
+    private MySQLiteOpenHelperReservation helperReservation;
+    private SQLiteDatabase card_db, reservation_db;
+    String tag = "SQLite"; // Log의 tag 로 사용
+    String tablecardName = "card", tablecreservationName="reservation";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
