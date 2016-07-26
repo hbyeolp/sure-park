@@ -139,6 +139,16 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                             Return_Reservtime(3,0);
                         }
                         break;
+                    case 6:
+                        if(curMin<30) {
+                            re_time = getReserv_time(3, 0);
+                            Return_Reservtime(3,0);
+                        }
+                        else {
+                            re_time = getReserv_time(3, 30);
+                            Return_Reservtime(3, 30);
+                        }
+                        break;
                 }
             }
             @Override
@@ -169,7 +179,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         adapter.add(revtime[3]);
         adapter.add(revtime[4]);
         adapter.add(revtime[5]);
-
+        adapter.add(revtime[6]);
         adapter.notifyDataSetChanged();
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -241,7 +251,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         c.add(Calendar.MINUTE,-rvmin);
     }
     protected String[] RevTime(){
-        revtime=new String[6];
+        revtime=new String[7];
 
         if(curMin<30) {
             revtime[0] = Integer.toString(curHour) + ":00 ~ " + Integer.toString(curHour)+":30";
@@ -250,6 +260,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             revtime[3] = Integer.toString(curHour+1) + ":30 ~ " + Integer.toString(curHour+2)+":00";
             revtime[4] = Integer.toString(curHour+2) + ":00 ~ " + Integer.toString(curHour+2)+":30";
             revtime[5] = Integer.toString(curHour+2) + ":30 ~ " + Integer.toString(curHour+3)+":00";
+            revtime[6] = Integer.toString(curHour+3) + ":00 ~ " + Integer.toString(curHour+3)+":30";
 
         }else {
             revtime[0] = Integer.toString(curHour) + ":30 ~ " + Integer.toString(curHour+1)+":00";
@@ -258,6 +269,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             revtime[3] = Integer.toString(curHour+2) + ":00 ~ " + Integer.toString(curHour+2)+":30";
             revtime[4] = Integer.toString(curHour+2) + ":30 ~ " + Integer.toString(curHour+3)+":00";
             revtime[5] = Integer.toString(curHour + 3) + ":00 ~ " + Integer.toString(curHour + 3) + ":30";
+            revtime[6] = Integer.toString(curHour+3) + ":30 ~ " + Integer.toString(curHour+4)+":00";
         }
 
         return revtime;

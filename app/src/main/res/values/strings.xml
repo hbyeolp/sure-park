@@ -16,4 +16,5 @@
     </string-array>
     <string name="title_activity_here">HereActivity</string>
     <string name="title_activity_handover">HandoverActivity</string>
+    <string name="title_activity_record_card">RecordCardActivity</string>
 </resources>

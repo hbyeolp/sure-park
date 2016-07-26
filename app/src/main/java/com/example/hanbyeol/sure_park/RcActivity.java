@@ -31,6 +31,7 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
     int rev_id, car_size;
     HttpGetInfo httpgetinfo;
     TextView text_revid, text_phonenum, text_email, text_locid, text_carsize, text_revtime;
+    Date d;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,11 +142,27 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            SimpleDateFormat fm = new SimpleDateFormat("Z");
+            d = new Date();
+            String aaa = "-04";
+            int a = Integer.parseInt(aaa);
+            System.out.println("dfsfsdfsdfsdf"    + aaa);
+
             text_email.setText(e_mail);
             text_phonenum.setText(phonenum);
             text_revtime.setText(re_time);
             text_revid.setText(Integer.toString(rev_id));
-            text_carsize.setText(Integer.toString(car_size));
+            switch (car_size){
+                case 1:
+                    text_carsize.setText("Small");
+                    break;
+                case 2:
+                    text_carsize.setText("Mid-size");
+                    break;
+                case 3:
+                    text_carsize.setText("Full-size");
+                    break;
+            }
             text_locid.setText(loc_id);
         }
     }

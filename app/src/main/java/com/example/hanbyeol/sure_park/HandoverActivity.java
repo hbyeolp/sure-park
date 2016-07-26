@@ -223,7 +223,7 @@ public class HandoverActivity extends AppCompatActivity implements View.OnClickL
                     byteData = baos.toByteArray();
 
                     response = new String(byteData);
-
+                    System.out.println(response);
                     JSONObject responseJSON = new JSONObject(response);
                     String user_status = (String) responseJSON.get("driverRegistration");
                     MainActivity.phoneNum = (String) responseJSON.get("phoneNumber");

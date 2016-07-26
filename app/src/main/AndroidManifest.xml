@@ -57,6 +57,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.hanbyeol.sure_park.MainActivity" />
         </activity>
+        <activity
+            android:name=".RecordCardActivity"
+            android:label="@string/title_activity_record_card"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.hanbyeol.sure_park.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

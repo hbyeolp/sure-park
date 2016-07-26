@@ -39,9 +39,9 @@ public class MainActivity extends AppCompatActivity
     HttpPostOauth postOauth;
     HttpGetList gethttp;
     public static String secret_k="surepark";
-    public static String address = "http://172.16.30.206:8080/surepark-restful/";
+    public static String address = "http://128.237.170.96:8080/surepark-restful/";
     private static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 1;
-    private static final int MY_PERMISSIONS_REQUEST_CALENDAR = 1;
+
     public static String phoneNum;
     public static String access_token, token_type;
     public static String ioc_id="1", rev_id, status="";
@@ -67,7 +67,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 if(status.equals("reserved") || status.equals("parked")) {
-                    Intent intent = new Intent(MainActivity.this, HandoverActivity.class);
+                    System.out.println("jwfiowejfoiwejfowief   "+ status);
+                    Intent intent = new Intent(MainActivity.this, HereActivity.class);
                     startActivity(intent);
                 }else{
                     AlertDialog.Builder alert_confirm = new AlertDialog.Builder(MainActivity.this);
@@ -91,9 +92,22 @@ public class MainActivity extends AppCompatActivity
         m_Adapter.add("example");
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                                    Intent myIntent = new Intent(MainActivity.this, InputActivity.class);
-                                                    startActivity(myIntent);
+                                                    if(status.equals("unreserved")) {
+                                                        Intent myIntent = new Intent(MainActivity.this, InputActivity.class);
+                                                        startActivity(myIntent);
+                                                    }
+                                                    else {
+                                                        AlertDialog.Builder alert_confirm = new AlertDialog.Builder(MainActivity.this);
+                                                        alert_confirm.setMessage("You already made a reservation").setCancelable(false).setPositiveButton("Confirm",
+                                                                new DialogInterface.OnClickListener() {
+                                                                    @Override
+                                                                    public void onClick(DialogInterface dialog, int which) {
 
+                                                                    }
+                                                                });
+                                                        AlertDialog alert = alert_confirm.create();
+                                                        alert.show();
+                                                    }
                                                 }
                                             });
         checkPermissionPhone();
@@ -217,12 +231,14 @@ public class MainActivity extends AppCompatActivity
                     byteData = baos.toByteArray();
 
                     response = new String(byteData);
+                    System.out.println(response);
 
                     JSONObject responseJSON = new JSONObject(response);
                     String user_status = (String) responseJSON.get("driverRegistration");
                     phoneNum = (String) responseJSON.get("phoneNumber");
                     id = (String) responseJSON.get("identificationNumber");
                     status = (String) responseJSON.get("state");
+                    rev_id = (String) responseJSON.get("reservationID");
                 }
 
             } catch (Exception e) {
