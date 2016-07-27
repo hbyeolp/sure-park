@@ -85,7 +85,7 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
         @Override
         public String doInBackground(String... params) {
             try {
-                URL url = new URL(MainActivity.address+"reservations/"+MainActivity.rev_id);
+                URL url = new URL(MainActivity.address+"reservations/"+MainActivity.phoneNum+"/"+MainActivity.rev_id);
                 HttpURLConnection   conn    = null;
                 OutputStream          os   = null;
                 InputStream           is   = null;
@@ -121,12 +121,14 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
                     System.out.println("Code woejfwe"+response);
 
                     MainActivity.rev_id = (String) responseJSON.get("reservationID");
-                    phonenum = (String) responseJSON.get("phoneNumber");
-                    e_mail = (String) responseJSON.get("email");
-                    loc_id = (String) responseJSON.get("parkingLotID");
-                    car_size = (int) responseJSON.get("carSize");
-                    re_time = (String) responseJSON.get("reservationTime");
-
+                    MainActivity.phoneNum = (String) responseJSON.get("phoneNumber");
+                    MainActivity.email = (String) responseJSON.get("email");
+                    MainActivity.ioc_id = (String) responseJSON.get("parkingLotID");
+                    MainActivity.car_size = (int) responseJSON.get("carSize");
+                    MainActivity.entranceTime = (String) responseJSON.get("entranceTime");
+                    MainActivity.exitTime = (String) responseJSON.get("exitTime");
+                    MainActivity.re_time = (String) responseJSON.get("reservationTime");
+                    System.out.println("get info: " +response);
                 } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
                     System.out.println("FOBIDDEN");
                 } else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){
@@ -149,11 +151,11 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
             int a = Integer.parseInt(aaa);
             System.out.println("dfsfsdfsdfsdf"    + aaa);
 
-            text_email.setText(e_mail);
-            text_phonenum.setText(phonenum);
-            text_revtime.setText(re_time);
+            text_email.setText(MainActivity.email);
+            text_phonenum.setText(MainActivity.phoneNum);
+            text_revtime.setText(MainActivity.re_time);
             text_revid.setText(MainActivity.rev_id);
-            switch (car_size){
+            switch (MainActivity.car_size){
                 case 1:
                     text_carsize.setText("Small");
                     break;
@@ -164,7 +166,7 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
                     text_carsize.setText("Full-size");
                     break;
             }
-            text_locid.setText(loc_id);
+            text_locid.setText(MainActivity.ioc_id);
         }
     }
 

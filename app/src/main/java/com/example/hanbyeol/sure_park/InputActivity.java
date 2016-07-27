@@ -1,22 +1,17 @@
 package com.example.hanbyeol.sure_park;
 
-import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -43,17 +38,11 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     EditText edit_card_num1, edit_card_num2, edit_card_num3, edit_card_num4, edit_card_cvc, edit_card_mon, edit_card_year, edit_card_firstname, edit_card_lastname;
     EditText edit_phone;
     EditText edit_date;
-    String e_mail, re_time, car_size, cardmon, cardnum, cardyear, cardcode, cardname;
+    String cardmon, cardnum, cardyear, cardcode, cardname;
     String[] revtime;
     int available_card=0;
 
-    String carddbName = "st_file_card.db", reservationdbName="st_file_reservation.db";
-    int dbVersion = 1;
-    private MySQLiteOpenHelperCard helperCard;
-    private MySQLiteOpenHelperReservation helperReservation;
-    private SQLiteDatabase card_db, reservation_db;
-    String tag = "SQLite"; // Log의 tag 로 사용
-    String tablecardName = "card", tablecreservationName="reservation";
+    private CardDbOpenHelper helperCard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +76,10 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         Spinner size = (Spinner)findViewById(R.id.input_carsize);
         time.setPrompt("Time");
         size.setPrompt("Car Size");
+
+        helperCard = new CardDbOpenHelper(this);
+        helperCard.open();
+
         time.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
@@ -94,71 +87,71 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                 switch (position){
                     case 0:
                         if(curMin<30) {
-                            re_time = getReserv_time(0, 0);
+                            MainActivity.re_time = getReserv_time(0, 0);
                             Return_Reservtime(0,0);
                         }
                         else {
-                            re_time = getReserv_time(0, 30);
+                            MainActivity.re_time = getReserv_time(0, 30);
                             Return_Reservtime(0,30);
                         }
                         break;
                     case 1:
                         if(curMin<30) {
-                            re_time = getReserv_time(0, 30);
+                            MainActivity.re_time = getReserv_time(0, 30);
                             Return_Reservtime(0,30);
                         }
                         else {
-                            re_time = getReserv_time(1, 0);
+                            MainActivity.re_time = getReserv_time(1, 0);
                             Return_Reservtime(1,0);
                         }
                         break;
                     case 2:
                         if(curMin<30) {
-                            re_time = getReserv_time(1, 0);
+                            MainActivity.re_time = getReserv_time(1, 0);
                             Return_Reservtime(1,0);
                         }
                         else {
-                            re_time = getReserv_time(1, 30);
+                            MainActivity.re_time = getReserv_time(1, 30);
                             Return_Reservtime(1,30);
                         }
                         break;
                     case 3:
                         if(curMin<30) {
-                            re_time = getReserv_time(1, 30);
+                            MainActivity.re_time = getReserv_time(1, 30);
                             Return_Reservtime(1,30);
                         }
                         else {
-                            re_time = getReserv_time(2, 0);
+                            MainActivity.re_time = getReserv_time(2, 0);
                             Return_Reservtime(2,0);
                         }
                         break;
                     case 4:
                         if(curMin<30) {
-                            re_time = getReserv_time(2, 0);
+                            MainActivity.re_time = getReserv_time(2, 0);
                             Return_Reservtime(2,0);
                         }
                         else {
-                            re_time = getReserv_time(2, 30);
+                            MainActivity.re_time = getReserv_time(2, 30);
                             Return_Reservtime(2,30);
                         }
                         break;
                     case 5:
                         if(curMin<30) {
-                            re_time = getReserv_time(2, 30);
+                            MainActivity.re_time = getReserv_time(2, 30);
                             Return_Reservtime(2,30);
                         }
                         else {
-                            re_time = getReserv_time(3, 0);
+                            MainActivity.re_time = getReserv_time(3, 0);
                             Return_Reservtime(3,0);
                         }
                         break;
                     case 6:
                         if(curMin<30) {
-                            re_time = getReserv_time(3, 0);
+                            MainActivity.re_time = getReserv_time(3, 0);
                             Return_Reservtime(3,0);
                         }
                         else {
-                            re_time = getReserv_time(3, 30);
+                            MainActivity.re_time = getReserv_time(3, 30);
                             Return_Reservtime(3, 30);
                         }
                         break;
@@ -173,13 +166,13 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                                        int position, long id) {
                 switch (position){
                     case 0:
-                        car_size="1";
+                        MainActivity.car_size=1;
                         break;
                     case 1:
-                        car_size="2";
+                        MainActivity.car_size=2;
                         break;
                     case 2:
-                        car_size="3";
+                        MainActivity.car_size=3;
                         break;
                 }
             }
@@ -384,6 +377,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                                 // 'YES'
                                 cardResult="fail";
                                 available_card=1;
+
                             }
                         });
                 AlertDialog alert1 = card_alert_confirm.create();
@@ -409,7 +403,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            e_mail=edit_e_mail.getText().toString();
+            MainActivity.email=edit_e_mail.getText().toString();
             cardnum=edit_card_num1.getText().toString()+edit_card_num2.getText().toString()+edit_card_num3.getText().toString()+edit_card_num4.getText().toString();
             cardcode=edit_card_cvc.getText().toString();
             cardmon=edit_card_mon.getText().toString();
@@ -438,10 +432,10 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                 JSONObject json = new JSONObject();
 
                 json.put("phoneNumber", MainActivity.phoneNum);
-                json.put("email", e_mail);
+                json.put("email", MainActivity.email);
                 json.put("parkingLotID", MainActivity.ioc_id);
-                json.put("reservationTime", re_time);
-                json.put("carSize", car_size);
+                json.put("reservationTime", MainActivity.re_time);
+                json.put("carSize", MainActivity.car_size);
                 json.put("cardNumber",cardnum);
                 json.put("cardExpirationMonth", cardmon);
                 json.put("cardExpirationYear", cardyear);
@@ -496,11 +490,9 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                                 revResult="fail";
                                 HttpPostLogin postLogin = new HttpPostLogin();
                                 postLogin.execute();
-                                HttpGetState getState = new HttpGetState();
-                                getState.execute();
+                                helperCard.Insert(cardnum, cardname, cardmon, cardyear, cardcode);
+                                helperCard.close();
                                 available_card=0;
-                                CardInsert(cardnum, cardname, cardmon, cardyear, cardcode);
-                                ReservationInsert(MainActivity.rev_id, MainActivity.parkinglotname, MainActivity.ioc_id, re_time, car_size, e_mail, MainActivity.phoneNum);
                                 finish();
                             }
                         });
@@ -522,9 +514,9 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    public class HttpPostLogin extends AsyncTask<String, Void, Void> {
+    public class HttpPostLogin extends AsyncTask<String, Void, String> {
         @Override
-        public Void doInBackground(String... params) {
+        public String doInBackground(String... params) {
             try {
                 URL url = new URL(MainActivity.address+"drivers");
                 HttpURLConnection   conn    = null;
@@ -585,110 +577,12 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             return null;
 
         }
-    }
-
-    void CardDelete(String cardNumber) {
-        int result = card_db.delete(tablecardName, "cardNumber=?", new String[] {cardNumber});
-        CardSelect(); // delete 후에 select 하도록
-    }
-
-    void CardUpdate (String cardNumber, String cardHolder, String cardExpirationMonth, String cardExpirationYear, String cardValidationCode) {
-        ContentValues values = new ContentValues();
-        values.put("cardHolder", cardHolder);         // 바꿀값
-        values.put("cardExpirationMonth", cardExpirationMonth); // 바꿀값
-        values.put("cardExpirationYear", cardExpirationYear); // 바꿀값
-        values.put("cardValidationCode", cardValidationCode); // 바꿀값
-
-        int result = card_db.update(tablecardName,
-                values,    // 뭐라고 변경할지 ContentValues 설정
-                "cardNumber=?", // 바꿀 항목을 찾을 조건절
-                new String[]{cardNumber});// 바꿀 항목으로 찾을 값 String 배열
-        CardSelect (); // 업데이트 후에 조회하도록
-    }
-
-    void CardSelect () {
-        Cursor c = card_db.query(tablecardName, null, null, null, null, null, null);
-        while(c.moveToNext()) {
-            int _id = c.getInt(0);
-            String cardNumber = c.getString(1);
-            String cardHolder = c.getString(2);
-            String cardExpirationMonth = c.getString(3);
-            String cardExpirationYear = c.getString(4);
-            String cardValidationCode = c.getString(5);
-
-            // 키보드 내리기
-            InputMethodManager imm =
-                    (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow
-                    (getCurrentFocus().getWindowToken(), 0);
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            HttpGetState getState = new HttpGetState();
+            getState.execute();
         }
-    }
-
-    void CardInsert (String cardNumber, String cardHolder, String cardExpirationMonth, String cardExpirationYear, String cardValidationCode) {
-        ContentValues values = new ContentValues();
-        // 키,값의 쌍으로 데이터 입력
-        values.put("cardNumber", cardNumber);
-        values.put("cardHolder", cardHolder);
-        values.put("cardExpirationMonth", cardExpirationMonth);
-        values.put("cardExpirationYear", cardExpirationYear);
-        values.put("cardValidationCode", cardValidationCode);
-
-        long result = card_db.insert(tablecardName, null, values);
-        CardSelect(); // insert 후에 select 하도록
-    }
-
-    void ReservationDelete(String reservationid) {
-        int result = reservation_db.delete(tablecreservationName, "reservationID=?", new String[] {reservationid});
-        CardSelect(); // delete 후에 select 하도록
-    }
-
-    void ReservationUpdate (String reservationid, String parkinglotname, String parkinglotid, String reservationtime, String carsize, String email, String phonenumber) {
-        ContentValues values = new ContentValues();
-        values.put("parkinglotname", parkinglotname);         // 바꿀값
-        values.put("parkinglotid", parkinglotid); // 바꿀값
-        values.put("reservationtime", reservationtime); // 바꿀값
-        values.put("carsize", carsize); // 바꿀값
-        values.put("email", email); // 바꿀값
-        values.put("phonenumber", phonenumber); // 바꿀값
-
-        int result = reservation_db.update(tablecreservationName,
-                values,    // 뭐라고 변경할지 ContentValues 설정
-                "reservationid=?", // 바꿀 항목을 찾을 조건절
-                new String[]{reservationid});// 바꿀 항목으로 찾을 값 String 배열
-        CardSelect (); // 업데이트 후에 조회하도록
-    }
-
-    void ReservationSelect () {
-        Cursor c = reservation_db.query(tablecreservationName, null, null, null, null, null, null);
-        while(c.moveToNext()) {
-            int _id = c.getInt(0);
-            String cardNumber = c.getString(1);
-            String cardHolder = c.getString(2);
-            String cardExpirationMonth = c.getString(3);
-            String cardExpirationYear = c.getString(4);
-            String cardValidationCode = c.getString(5);
-
-            // 키보드 내리기
-            InputMethodManager imm =
-                    (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow
-                    (getCurrentFocus().getWindowToken(), 0);
-        }
-    }
-
-    void ReservationInsert (String reservationid, String parkinglotname, String parkinglotid, String reservationtime, String carsize, String email, String phonenumber) {
-        ContentValues values = new ContentValues();
-        // 키,값의 쌍으로 데이터 입력
-        values.put("reservationid", reservationid);
-        values.put("parkinglotname", parkinglotname);
-        values.put("parkinglotid", parkinglotid);
-        values.put("reservationtime", reservationtime);
-        values.put("carsize", carsize);
-        values.put("email", email);
-        values.put("phonenumber", phonenumber);
-
-        long result = reservation_db.insert(tablecreservationName, null, values);
-        CardSelect(); // insert 후에 select 하도록
     }
 
     public class HttpGetState extends AsyncTask<String, Void, String> {

@@ -153,10 +153,6 @@ public class HandoverActivity extends AppCompatActivity implements View.OnClickL
                                 handoverResult="fail";
                                 HttpPostLogin postLogin = new HttpPostLogin();
                                 postLogin.execute();
-                                HttpPostOauth postOauth = new HttpPostOauth();
-                                postOauth.execute();
-                                HttpGetState getState = new HttpGetState();
-                                getState.execute();
                                 System.out.println(MainActivity.status);
 
                                 finish();
@@ -180,9 +176,9 @@ public class HandoverActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    public class HttpPostOauth extends AsyncTask<String, Void, Void> {
+    public class HttpPostOauth extends AsyncTask<String, Void, String> {
         @Override
-        public Void doInBackground(String... params) {
+        public String doInBackground(String... params) {
             try {
                 URL url = new URL(MainActivity.address+"oauth/token");
                 HttpURLConnection   conn    = null;
@@ -247,11 +243,17 @@ public class HandoverActivity extends AppCompatActivity implements View.OnClickL
             return null;
 
         }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            HttpGetState getState = new HttpGetState();
+            getState.execute();
+        }
     }
 
-    public class HttpPostLogin extends AsyncTask<String, Void, Void> {
+    public class HttpPostLogin extends AsyncTask<String, Void, String> {
         @Override
-        public Void doInBackground(String... params) {
+        public String doInBackground(String... params) {
             try {
                 URL url = new URL(MainActivity.address+"drivers");
                 HttpURLConnection   conn    = null;
@@ -311,6 +313,12 @@ public class HandoverActivity extends AppCompatActivity implements View.OnClickL
 
             return null;
 
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            HttpPostOauth postOauth = new HttpPostOauth();
+            postOauth.execute();
         }
     }
 

@@ -17,9 +17,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class HereActivity extends AppCompatActivity implements View.OnClickListener {
     String gateresult="fail";
+    private ReservationDbOpenHelper helperReservation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +32,9 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(toolbar);
        ImageButton btnhere=(ImageButton) findViewById (R.id.button_imhere);
         btnhere.setOnClickListener(this);
+
+        helperReservation = new ReservationDbOpenHelper(this);
+        helperReservation.open();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -47,8 +54,8 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                HttpGetGate delInfo= new HttpGetGate();
-                                delInfo.execute();
+                                HttpGetGate getGate= new HttpGetGate();
+                                getGate.execute();
                                 return;
                             }
                         });
@@ -57,11 +64,16 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        helperReservation.close();
+    }
     public class HttpGetGate extends AsyncTask<String, Void, String> {
         @Override
         public String doInBackground(String... params) {
             try {
-                URL url = new URL(MainActivity.address+"opengate/" + MainActivity.phoneNum);
+                URL url = new URL(MainActivity.address+"opengate/" + MainActivity.phoneNum+"/"+MainActivity.rev_id);
                 HttpURLConnection   conn    = null;
                 OutputStream          os   = null;
                 InputStream           is   = null;
@@ -105,6 +117,7 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
                 } else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){
                     System.out.println("UNAUTHORIZED");
                 }
+
                 conn.disconnect();
             } catch (Exception e) {
                 System.out.println("error");
@@ -128,10 +141,6 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
                                 gateresult="fail";
                                 HttpPostLogin postLogin = new HttpPostLogin();
                                 postLogin.execute();
-                                HttpPostOauth postOauth = new HttpPostOauth();
-                                postOauth.execute();
-                                HttpGetState getState = new HttpGetState();
-                                getState.execute();
                                 finish();
                             }
                         });
@@ -153,9 +162,9 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public class HttpPostLogin extends AsyncTask<String, Void, Void> {
+    public class HttpPostLogin extends AsyncTask<String, Void, String> {
         @Override
-        public Void doInBackground(String... params) {
+        public String doInBackground(String... params) {
             try {
                 URL url = new URL(MainActivity.address+"drivers");
                 HttpURLConnection   conn    = null;
@@ -216,11 +225,17 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
             return null;
 
         }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            HttpPostOauth postOauth = new HttpPostOauth();
+            postOauth.execute();
+        }
     }
 
-    public class HttpPostOauth extends AsyncTask<String, Void, Void> {
+    public class HttpPostOauth extends AsyncTask<String, Void, String> {
         @Override
-        public Void doInBackground(String... params) {
+        public String doInBackground(String... params) {
             try {
                 URL url = new URL(MainActivity.address+"oauth/token");
                 HttpURLConnection   conn    = null;
@@ -285,6 +300,12 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
             return null;
 
         }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            HttpGetState getState = new HttpGetState();
+            getState.execute();
+        }
     }
 
     public class HttpGetState extends AsyncTask<String, Void, String> {
@@ -345,7 +366,79 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            HttpGetInfo getInfo = new HttpGetInfo();
+            getInfo.execute();
+        }
+    }
+    public class HttpGetInfo extends AsyncTask<String, Void, String> {
+        @Override
+        public String doInBackground(String... params) {
+            try {
+                URL url = new URL(MainActivity.address+"reservations/"+MainActivity.rev_id);
+                HttpURLConnection   conn    = null;
+                OutputStream          os   = null;
+                InputStream           is   = null;
+                ByteArrayOutputStream baos = null;
+                conn = (HttpURLConnection)url.openConnection();
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(10000);
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Authorization", MainActivity.token_type+" "+MainActivity.access_token);
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoInput(true);
+                conn.connect();
 
+                String response;
+
+                int responseCode = conn.getResponseCode();
+                if(responseCode == HttpURLConnection.HTTP_OK) {
+
+                    is = conn.getInputStream();
+                    baos = new ByteArrayOutputStream();
+                    byte[] byteBuffer = new byte[1024];
+                    byte[] byteData = null;
+                    int nLength = 0;
+                    while((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
+                        baos.write(byteBuffer, 0, nLength);
+                    }
+                    byteData = baos.toByteArray();
+
+                    response = new String(byteData);
+
+                    JSONObject responseJSON = new JSONObject(response);
+                    System.out.println("Code woejfwe"+response);
+
+                    MainActivity.rev_id = (String) responseJSON.get("reservationID");
+                    MainActivity.phoneNum = (String) responseJSON.get("phoneNumber");
+                    MainActivity.email = (String) responseJSON.get("email");
+                    MainActivity.ioc_id = (String) responseJSON.get("parkingLotID");
+                    MainActivity.car_size = (int) responseJSON.get("carSize");
+                    MainActivity.entranceTime = (String) responseJSON.get("entranceTime");
+                    MainActivity.exitTime = (String) responseJSON.get("exitTime");
+                    MainActivity.re_time = (String) responseJSON.get("reservationTime");
+
+                } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
+                    System.out.println("FOBIDDEN");
+                } else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){
+                    System.out.println("UNAUTHORIZED");
+                }
+                conn.disconnect();
+            } catch (Exception e) {
+                System.out.println("error");
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if(MainActivity.status.equals("parked"))
+                helperReservation.Insert(MainActivity.email, MainActivity.parkinglotname, MainActivity.ioc_id, MainActivity.re_time,  MainActivity.entranceTime, MainActivity.exitTime);
+            else if(MainActivity.status.equals("paying"))
+                helperReservation.Update(MainActivity.pre_resvid, MainActivity.email, MainActivity.parkinglotname, MainActivity.ioc_id, MainActivity.re_time,  MainActivity.entranceTime, MainActivity.exitTime);
+            helperReservation.close();
         }
     }
 }

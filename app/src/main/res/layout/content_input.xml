@@ -100,6 +100,7 @@
             android:layout_width="125px"
             android:layout_height="wrap_content"
             android:id="@+id/input_card2"
+            android:inputType="number"
             android:maxLength="4"
             android:hint="card" />
 
@@ -115,6 +116,8 @@
             android:layout_width="125px"
             android:layout_height="wrap_content"
             android:id="@+id/input_card3"
+            android:inputType="number"
+            android:maxLength="4"
             android:hint="card" />
 
         <TextView
@@ -129,6 +132,8 @@
             android:layout_width="125px"
             android:layout_height="wrap_content"
             android:id="@+id/input_card4"
+            android:inputType="number"
+            android:maxLength="4"
             android:hint="card" />
     </LinearLayout>
 
@@ -145,6 +150,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/input_month"
             android:layout_marginRight="10px"
+            android:inputType="number"
+            android:maxLength="2"
             android:hint="month" />
 
         <EditText
@@ -152,6 +159,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/input_year"
             android:layout_marginRight="10px"
+            android:inputType="number"
+            android:maxLength="2"
             android:hint="year" />
 
         <EditText
@@ -159,6 +168,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/input_cvc"
             android:layout_marginRight="20px"
+            android:inputType="number"
+            android:maxLength="3"
             android:hint="cvc" />
 
     </LinearLayout>
@@ -177,6 +188,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/input_firstname"
             android:layout_marginRight="10px"
+            android:inputType="textPersonName"
             android:hint="First Name"
             android:layout_weight="0.27" />
 
@@ -185,6 +197,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/input_lastname"
             android:layout_marginRight="20px"
+            android:inputType="textPersonName"
             android:hint="Last Name"
             android:layout_weight="0.24" />
 

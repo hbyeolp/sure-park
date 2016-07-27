@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -23,6 +22,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,8 +33,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -42,18 +40,26 @@ public class MainActivity extends AppCompatActivity
     HttpPostOauth postOauth;
     HttpGetList getList;
     HttpGetState getState;
+
+    SearchView searchView;
+
     public static String secret_k="surepark";
-    public static String address = "http://128.237.170.96:8080/surepark-restful/";
+    public static String address = "http://192.168.1.80:8080/surepark-restful/";
     private static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 1;
 
     public static String phoneNum;
     public static String access_token, token_type;
-    public static String ioc_id="1", rev_id, status="";
-    public static String id, parkinglotname;
+    public static String ioc_id="1", rev_id, status="unreserved", pre_resvid;
+    public static String id, parkinglotname, email, entranceTime, exitTime, re_time;
+    public static int car_size;
+    String searchParkinglot;
+
     JSONArray sureparks;
     int ct;
-    String[] loc_ids;
+    String[] loc_ids, loc_names;
     ArrayAdapter<String> m_Adapter;
+
+    private CardDbOpenHelper helperCard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +67,25 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        searchView = (SearchView) findViewById(R.id.search_parkinglot);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+
+                searchParkinglot = searchView.getQuery().toString();
+                System.out.println("Query"+searchParkinglot);
+                getList = new HttpGetList();
+                getList.execute();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+
+                return true;
+            }
+        });
+        searchView.setSubmitButtonEnabled(true);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -72,7 +97,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 if(status.equals("reserved") || status.equals("parked")) {
-                    System.out.println("jwfiowejfoiwejfowief   "+ status);
                     Intent intent = new Intent(MainActivity.this, HereActivity.class);
                     startActivity(intent);
                 }else{
@@ -91,15 +115,46 @@ public class MainActivity extends AppCompatActivity
         });
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        ListView listview = (ListView)findViewById(R.id.listView);
+        final ListView listview = (ListView)findViewById(R.id.listView);
         m_Adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1);
         listview.setAdapter(m_Adapter);
         m_Adapter.add("example");
+        helperCard = new CardDbOpenHelper(this);
+        helperCard.open();
+
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                                     if(status.equals("unreserved")) {
-                                                        Intent myIntent = new Intent(MainActivity.this, InputActivity.class);
-                                                        startActivity(myIntent);
+                                                        if(helperCard.Count()>0) {
+                                                            AlertDialog.Builder alert_confirm = new AlertDialog.Builder(MainActivity.this);
+                                                            alert_confirm.setMessage("Would you like to use the stored card?").setCancelable(false).setPositiveButton("No",
+                                                                    new DialogInterface.OnClickListener() {
+                                                                        @Override
+                                                                        public void onClick(DialogInterface dialog, int which) {
+                                                                            Intent myIntent = new Intent(MainActivity.this, InputActivity.class);
+                                                                            startActivity(myIntent);
+                                                                        }
+                                                                    }).setNegativeButton("Yes",
+                                                                    new DialogInterface.OnClickListener() {
+                                                                        @Override
+                                                                        public void onClick(DialogInterface dialog, int which) {
+                                                                            Intent myIntent = new Intent(MainActivity.this, RecordCardActivity.class);
+                                                                            startActivity(myIntent);
+                                                                            return;
+                                                                        }
+                                                                    });
+                                                            AlertDialog alert = alert_confirm.create();
+                                                            alert.show();
+                                                        }
+                                                        else {
+                                                            Intent myIntent = new Intent(MainActivity.this, InputActivity.class);
+                                                            startActivity(myIntent);
+                                                        }
+                                                 //       if(loc_ids.equals(null) && loc_names.equals(null)) {
+                                                   //         MainActivity.ioc_id = loc_ids[listview.getSelectedItemPosition()];
+                                                   //         MainActivity.parkinglotname = loc_names[listview.getSelectedItemPosition()];
+                                                  //      }
+                                                        helperCard.close();
                                                     }
                                                     else {
                                                         AlertDialog.Builder alert_confirm = new AlertDialog.Builder(MainActivity.this);
@@ -134,12 +189,6 @@ public class MainActivity extends AppCompatActivity
             // 다음 부분은 항상 허용일 경우에 해당이 됩니다.
             postlogin= new HttpPostLogin();
             postlogin.execute();
-            postOauth = new HttpPostOauth();
-            postOauth.execute();
-            getList= new HttpGetList();
-            getList.execute();
-            getState = new HttpGetState();
-            getState.execute();
         }
     }
 
@@ -164,6 +213,7 @@ public class MainActivity extends AppCompatActivity
             if(status.equals("reserved") || status.equals("parked") || status.equals("paying")) {
                 Intent intent = new Intent(MainActivity.this, RcActivity.class);
                 startActivity(intent);
+                helperCard.close();
             }
             else{
 
@@ -173,6 +223,7 @@ public class MainActivity extends AppCompatActivity
             if(status.equals("reserved") || status.equals("parked")) {
                 Intent intent = new Intent(MainActivity.this, HandoverActivity.class);
                 startActivity(intent);
+                helperCard.close();
             }else{
 
             }
@@ -181,6 +232,7 @@ public class MainActivity extends AppCompatActivity
             if(status.equals("reserved") || status.equals("parked")) {
                 Intent intent = new Intent(MainActivity.this, HereActivity.class);
                 startActivity(intent);
+                helperCard.close();
             }else{
 
             }
@@ -188,14 +240,16 @@ public class MainActivity extends AppCompatActivity
         if(id==R.id.nav_past_rc){
             Intent intent = new Intent(MainActivity.this, PastRcActivity.class);
             startActivity(intent);
+            helperCard.close();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    public class HttpPostLogin extends AsyncTask<String, Void, Void> {
+
+    public class HttpPostLogin extends AsyncTask<String, Void, String> {
         @Override
-        public Void doInBackground(String... params) {
+        public String doInBackground(String... params) {
             try {
                 URL url = new URL(address+"drivers");
                 HttpURLConnection   conn    = null;
@@ -258,10 +312,16 @@ public class MainActivity extends AppCompatActivity
             return null;
 
         }
-    }
-    public class HttpPostOauth extends AsyncTask<String, Void, Void> {
         @Override
-        public Void doInBackground(String... params) {
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            postOauth = new HttpPostOauth();
+            postOauth.execute();
+        }
+    }
+    public class HttpPostOauth extends AsyncTask<String, Void, String> {
+        @Override
+        public String doInBackground(String... params) {
             try {
                 URL url = new URL(address+"oauth/token");
                 HttpURLConnection   conn    = null;
@@ -326,13 +386,19 @@ public class MainActivity extends AppCompatActivity
             return null;
 
         }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            getState = new HttpGetState();
+            getState.execute();
+        }
     }
 
     public class HttpGetList extends AsyncTask<String, Void, String> {
         @Override
         public String doInBackground(String... params) {
             try {
-                URL url = new URL(address+"sureparks/list");
+                URL url = new URL(address+"sureparks/list/"+parkinglotname);
                 HttpURLConnection   conn    = null;
                 OutputStream          os   = null;
                 InputStream           is   = null;
@@ -347,11 +413,10 @@ public class MainActivity extends AppCompatActivity
                 conn.setDoInput(true);
                 conn.connect();
 
-                System.out.println("=========================");
-
                 String response;
 
                 int responseCode = conn.getResponseCode();
+                System.out.println("========================="+responseCode);
 
                 if(responseCode == HttpURLConnection.HTTP_OK) {
 
@@ -373,7 +438,6 @@ public class MainActivity extends AppCompatActivity
                     ct = Integer.parseInt(count);
                     System.out.println(response);
 
-
                 } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
                     System.out.println("FOBIDDEN");
                 } else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){
@@ -392,14 +456,14 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-
+            loc_names=new String[ct];
             loc_ids = new String[ct];
             for(int i=0;i<ct;i++){
                 try {
                     JSONObject json = sureparks.getJSONObject(i);
-                    parkinglotname = (String) json.get("parkingLotName");
+                    loc_names[i] = (String) json.get("parkingLotName");
                     loc_ids[i] = (String) json.get("parkingLotID");
-                    m_Adapter.add(parkinglotname+"    ID : "+ loc_ids[i]);
+                    m_Adapter.add(parkinglotname+"    ID: "+ loc_ids[i]);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -448,7 +512,8 @@ public class MainActivity extends AppCompatActivity
                     rev_id = (String) responseJSON.get("reservationID");
                     phoneNum = (String) responseJSON.get("phoneNumber");
                     status = (String) responseJSON.get("state");
-
+                    System.out.println(status);
+                    System.out.println("rev_id"+rev_id);
                 } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
                     System.out.println("FOBIDDEN");
                 } else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){
