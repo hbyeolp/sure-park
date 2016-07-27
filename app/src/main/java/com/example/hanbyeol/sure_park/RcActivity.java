@@ -28,8 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class RcActivity extends AppCompatActivity implements View.OnClickListener {
-    String e_mail, re_time, phonenum, loc_id, cancel_result="fail";
-    int car_size;
+    String cancel_result="fail";
     HttpGetInfo httpgetinfo;
     TextView text_revid, text_phonenum, text_email, text_locid, text_carsize, text_revtime;
     Date d;

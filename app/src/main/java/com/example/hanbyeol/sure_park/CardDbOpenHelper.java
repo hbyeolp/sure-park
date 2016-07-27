@@ -62,9 +62,10 @@ public class CardDbOpenHelper {
         int result = mDB.delete(_TABLENAME, "cardNumber=?", new String[] {cardNumber});
     }
 
-    void Update (String cardNumber, String cardHolder, String cardExpirationMonth, String cardExpirationYear, String cardValidationCode) {
+    void Update (String cardNumber, String cardLastname, String cardFirstname, String cardExpirationMonth, String cardExpirationYear, String cardValidationCode) {
         ContentValues values = new ContentValues();
-        values.put("cardHolder", cardHolder);         // 바꿀값
+        values.put("cardLastname", cardLastname);         // 바꿀값
+        values.put("cardFirstname", cardFirstname);
         values.put("cardExpirationMonth", cardExpirationMonth); // 바꿀값
         values.put("cardExpirationYear", cardExpirationYear); // 바꿀값
         values.put("cardValidationCode", cardValidationCode); // 바꿀값
@@ -81,35 +82,47 @@ public class CardDbOpenHelper {
         return c.getCount();
     }
 
-    Boolean Compare (String cardNumber, String cardHolder, String cardExpirationMonth, String cardExpirationYear, String cardValidationCode) {
+    Boolean Compare (String cardNumber, String cardLastname, String cardFirstname, String cardExpirationMonth, String cardExpirationYear, String cardValidationCode) {
         Cursor c = mDB.query(_TABLENAME, null, null, null, null, null, null);
         while(c.moveToNext()) {
-            if(cardNumber.equals(c.getString(0)) && cardHolder.equals(c.getString(1)) && cardExpirationMonth.equals(c.getString(2)) && cardExpirationYear.equals(c.getString(3)) && cardValidationCode.equals(c.getString(4))){
+            if(cardNumber.equals(c.getString(1)) && cardLastname.equals(c.getString(2)) && cardFirstname.equals(c.getString(3))&& cardExpirationMonth.equals(c.getString(4)) && cardExpirationYear.equals(c.getString(5)) && cardValidationCode.equals(c.getString(6))){
                 return false;
             }
         }
         return true;
     }
 
-    void Insert (String cardNumber, String cardHolder, String cardExpirationMonth, String cardExpirationYear, String cardValidationCode) {
+    void Insert (String cardNumber, String cardLastname, String cardFirstname, String cardExpirationMonth, String cardExpirationYear, String cardValidationCode) {
         ContentValues values = new ContentValues();
         // 키,값의 쌍으로 데이터 입력
         values.put("cardNumber", cardNumber);
-        values.put("cardHolder", cardHolder);
+        values.put("cardLastname", cardLastname);
+        values.put("cardFirstname", cardFirstname);
         values.put("cardExpirationMonth", cardExpirationMonth);
         values.put("cardExpirationYear", cardExpirationYear);
         values.put("cardValidationCode", cardValidationCode);
-        if(Compare(cardNumber, cardHolder, cardExpirationMonth, cardExpirationYear, cardValidationCode)) {
+        if(Compare(cardNumber, cardLastname, cardFirstname, cardExpirationMonth, cardExpirationYear, cardValidationCode)) {
             mDB.insert(_TABLENAME, null, values);
         }
     }
-    void UpdateListView(ArrayAdapter<String> arrayAdapter){
+    void UpdateListView(ArrayAdapter<String> arrayAdapter, String[] cardNumbers, String[] cardHolders, String[] cardExpirationMonths, String[] cardExpirationYears, String[] cardValidationCodes){
         Cursor c = mDB.query(_TABLENAME, null, null, null, null, null, null);
         if(c.getCount()!=0) {
-            c.moveToLast();
+            int a=1;
+            cardNumbers[0]=c.getString(1);
+            cardHolders[0]=c.getString(3)+c.getString(2);
+            cardExpirationMonths[0]=c.getString(4);
+            cardExpirationYears[0]=c.getString(5);
+            cardValidationCodes[0]=c.getString(6);
             arrayAdapter.add(" Card Number: " + c.getString(1) + "\n CardHolder: " + c.getString(2) + "\n Car Expiration: " + c.getString(3) + "/"+ c.getString(4) + "\n CVC: " + c.getString(5));
-            while (c.moveToPrevious()) {
+            while (c.moveToNext()) {
+                cardNumbers[a]=c.getString(1);
+                cardHolders[a]=c.getString(2);
+                cardExpirationMonths[a]=c.getString(3);
+                cardExpirationYears[a]=c.getString(4);
+                cardValidationCodes[a]=c.getString(5);
                 arrayAdapter.add(" Card Number: " + c.getString(1) + "\n CardHolder: " + c.getString(2) + "\n Car Expiration: " + c.getString(3) + "/"+ c.getString(4) + "\n CVC: " + c.getString(5));
+                a++;
             }
         }
     }

@@ -38,7 +38,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     EditText edit_card_num1, edit_card_num2, edit_card_num3, edit_card_num4, edit_card_cvc, edit_card_mon, edit_card_year, edit_card_firstname, edit_card_lastname;
     EditText edit_phone;
     EditText edit_date;
-    String cardmon, cardnum, cardyear, cardcode, cardname;
+
     String[] revtime;
     int available_card=0;
 
@@ -72,6 +72,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         btnrev.setOnClickListener(this);
         Curdate();
         RevTime();
+        SetTrueClick();
         Spinner time = (Spinner)findViewById(R.id.input_time);
         Spinner size = (Spinner)findViewById(R.id.input_carsize);
         time.setPrompt("Time");
@@ -194,6 +195,18 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         edit_phone.setText(MainActivity.phoneNum);
         edit_date.setText(CurDate());
 
+        if(MainActivity.cardstate==1){
+            edit_card_num1.setText(MainActivity.cardnum.substring(0,4));
+            edit_card_num2.setText(MainActivity.cardnum.substring(4,8));
+            edit_card_num3.setText(MainActivity.cardnum.substring(8,12));
+            edit_card_num4.setText(MainActivity.cardnum.substring(12));
+            edit_card_cvc.setText(MainActivity.cardcode);
+            edit_card_year.setText(MainActivity.cardyear);
+            edit_card_mon.setText(MainActivity.cardmon);
+            SetFalseClick();
+            MainActivity.cardstate=0;
+        }
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
@@ -239,6 +252,42 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                 }
                 break;
         }
+    }
+    void SetFalseClick(){
+        edit_card_num1.setFocusable(false);
+        edit_card_num1.setClickable(false);
+        edit_card_num2.setFocusable(false);
+        edit_card_num2.setClickable(false);
+        edit_card_num3.setFocusable(false);
+        edit_card_num3.setClickable(false);
+        edit_card_num4.setFocusable(false);
+        edit_card_num4.setClickable(false);
+        edit_card_cvc.setFocusable(false);
+        edit_card_mon.setClickable(false);
+        edit_card_year.setFocusable(false);
+        edit_card_year.setClickable(false);
+        edit_card_firstname.setFocusable(false);
+        edit_card_firstname.setClickable(false);
+        edit_card_lastname.setFocusable(false);
+        edit_card_lastname.setClickable(false);
+    }
+    void SetTrueClick(){
+        edit_card_num1.setFocusable(true);
+        edit_card_num1.setClickable(true);
+        edit_card_num2.setFocusable(true);
+        edit_card_num2.setClickable(true);
+        edit_card_num3.setFocusable(true);
+        edit_card_num3.setClickable(true);
+        edit_card_num4.setFocusable(true);
+        edit_card_num4.setClickable(true);
+        edit_card_cvc.setFocusable(true);
+        edit_card_mon.setClickable(true);
+        edit_card_year.setFocusable(true);
+        edit_card_year.setClickable(true);
+        edit_card_firstname.setFocusable(true);
+        edit_card_firstname.setClickable(true);
+        edit_card_lastname.setFocusable(true);
+        edit_card_lastname.setClickable(true);
     }
     public String getReserv_time(int rvhour, int rvmin){
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -296,11 +345,11 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            cardnum=edit_card_num1.getText().toString()+edit_card_num2.getText().toString()+edit_card_num3.getText().toString()+edit_card_num4.getText().toString();
-            cardcode=edit_card_cvc.getText().toString();
-            cardmon=edit_card_mon.getText().toString();
-            cardyear=edit_card_year.getText().toString();
-            cardname=edit_card_firstname.getText().toString()+edit_card_lastname.getText().toString();
+            MainActivity.cardnum=edit_card_num1.getText().toString()+edit_card_num2.getText().toString()+edit_card_num3.getText().toString()+edit_card_num4.getText().toString();
+            MainActivity.cardcode=edit_card_cvc.getText().toString();
+            MainActivity.cardmon=edit_card_mon.getText().toString();
+            MainActivity.cardyear=edit_card_year.getText().toString();
+            MainActivity.cardname=edit_card_firstname.getText().toString()+edit_card_lastname.getText().toString();
         }
         @Override
         public String doInBackground(String... params) {
@@ -325,11 +374,11 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                 JSONObject json = new JSONObject();
 
                 json.put("phoneNumber", MainActivity.phoneNum);
-                json.put("cardNumber", cardnum);
-                json.put("cardExpirationMonth", cardmon);
-                json.put("cardExpirationYear", cardyear);
-                json.put("cardValidationCode", cardcode);
-                json.put("cardHolder", cardname);
+                json.put("cardNumber", MainActivity.cardnum);
+                json.put("cardExpirationMonth", MainActivity.cardmon);
+                json.put("cardExpirationYear", MainActivity.cardyear);
+                json.put("cardValidationCode", MainActivity.cardcode);
+                json.put("cardHolder", MainActivity.cardname);
                 os = conn.getOutputStream();
                 os.write(json.toString().getBytes());
                 os.flush();
@@ -375,6 +424,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // 'YES'
+                                SetFalseClick();
                                 cardResult="fail";
                                 available_card=1;
 
@@ -404,10 +454,10 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         protected void onPreExecute() {
             super.onPreExecute();
             MainActivity.email=edit_e_mail.getText().toString();
-            cardnum=edit_card_num1.getText().toString()+edit_card_num2.getText().toString()+edit_card_num3.getText().toString()+edit_card_num4.getText().toString();
-            cardcode=edit_card_cvc.getText().toString();
-            cardmon=edit_card_mon.getText().toString();
-            cardyear=edit_card_year.getText().toString();
+            MainActivity.cardnum=edit_card_num1.getText().toString()+edit_card_num2.getText().toString()+edit_card_num3.getText().toString()+edit_card_num4.getText().toString();
+            MainActivity.cardcode=edit_card_cvc.getText().toString();
+            MainActivity.cardmon=edit_card_mon.getText().toString();
+            MainActivity.cardyear=edit_card_year.getText().toString();
         }
         @Override
         public String doInBackground(String... params) {
@@ -436,11 +486,11 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                 json.put("parkingLotID", MainActivity.ioc_id);
                 json.put("reservationTime", MainActivity.re_time);
                 json.put("carSize", MainActivity.car_size);
-                json.put("cardNumber",cardnum);
-                json.put("cardExpirationMonth", cardmon);
-                json.put("cardExpirationYear", cardyear);
-                json.put("cardValidationCode", cardcode);
-                json.put("cardHolder", cardname);
+                json.put("cardNumber",MainActivity.cardnum);
+                json.put("cardExpirationMonth", MainActivity.cardmon);
+                json.put("cardExpirationYear", MainActivity.cardyear);
+                json.put("cardValidationCode", MainActivity.cardcode);
+                json.put("cardHolder", MainActivity.cardname);
 
                 os = conn.getOutputStream();
                 os.write(json.toString().getBytes());
@@ -490,7 +540,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                                 revResult="fail";
                                 HttpPostLogin postLogin = new HttpPostLogin();
                                 postLogin.execute();
-                                helperCard.Insert(cardnum, cardname, cardmon, cardyear, cardcode);
+                                helperCard.Insert(MainActivity.cardnum, edit_card_lastname.getText().toString(), edit_card_firstname.getText().toString(), MainActivity.cardmon, MainActivity.cardyear, MainActivity.cardcode);
                                 helperCard.close();
                                 available_card=0;
                                 finish();

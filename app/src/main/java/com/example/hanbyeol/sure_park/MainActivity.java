@@ -55,10 +55,13 @@ public class MainActivity extends AppCompatActivity
     String searchParkinglot;
 
     JSONArray sureparks;
-    int ct;
+    int ct=0;
     String[] loc_ids, loc_names;
     ArrayAdapter<String> m_Adapter;
 
+    public static int cardstate=0;
+    public static String[] cardmons, cardnums, cardyears, cardcodes, cardnames;
+    public static String cardmon, cardnum, cardyear, cardcode, cardname;
     private CardDbOpenHelper helperCard;
 
     @Override
@@ -150,10 +153,10 @@ public class MainActivity extends AppCompatActivity
                                                             Intent myIntent = new Intent(MainActivity.this, InputActivity.class);
                                                             startActivity(myIntent);
                                                         }
-                                                 //       if(loc_ids.equals(null) && loc_names.equals(null)) {
-                                                   //         MainActivity.ioc_id = loc_ids[listview.getSelectedItemPosition()];
-                                                   //         MainActivity.parkinglotname = loc_names[listview.getSelectedItemPosition()];
-                                                  //      }
+                                                        if(hasValues(loc_ids) && hasValues(loc_names)) {
+                                                            MainActivity.ioc_id = loc_ids[listview.getSelectedItemPosition()];
+                                                            MainActivity.parkinglotname = loc_names[listview.getSelectedItemPosition()];
+                                                        }
                                                         helperCard.close();
                                                     }
                                                     else {
@@ -532,5 +535,19 @@ public class MainActivity extends AppCompatActivity
             super.onPostExecute(s);
 
         }
+    }
+
+    boolean hasValues(String... strs) {
+
+        boolean hasValues = true;
+
+        for (String str : strs) {
+
+            if (str == null || str.length() == 0) {
+                hasValues = false;
+                break;
+            }
+        }
+        return hasValues;
     }
 }
