@@ -22,7 +22,6 @@ public class ReservationDbOpenHelper {
 
     private class DatabaseHelper extends SQLiteOpenHelper {
 
-        // 생성자
         public DatabaseHelper(Context context, String name,
                               SQLiteDatabase.CursorFactory factory, int version) {
 
@@ -30,14 +29,12 @@ public class ReservationDbOpenHelper {
 
         }
 
-        // 최초 DB를 만들때 한번만 호출된다.
         @Override
         public void onCreate(SQLiteDatabase db) {
             System.out.println(DataBases.ReservationCreateDB._CREATE);
             db.execSQL(DataBases.ReservationCreateDB._CREATE);
         }
 
-        // 버전이 업데이트 되었을 경우 DB를 다시 만들어 준다.
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             db.execSQL("DROP TABLE IF EXISTS "+_TABLENAME);
@@ -72,9 +69,9 @@ public class ReservationDbOpenHelper {
         values.put("entranceTime", entranceTime);
         values.put("exitTime", exitTime);
         int result = mDB.update(_TABLENAME,
-                values,    // 뭐라고 변경할지 ContentValues 설정
-                "_id=?", // 바꿀 항목을 찾을 조건절
-                new String[]{SelectID(id)});// 바꿀 항목으로 찾을 값 String 배열
+                values,
+                "_id=?",
+                new String[]{SelectID(id)});// 諛붽? ??ぉ?쇰줈 李얠쓣 媛?String 諛곗뿴
     }
     String SelectID(String id){
         Cursor c = mDB.query(_TABLENAME, null, null, null, null, null, null);
@@ -115,7 +112,6 @@ public class ReservationDbOpenHelper {
 
     long Insert (String parkingLotName, String email, int carSize, String reservationTime, String entranceTime, String exitTime) {
         ContentValues values = new ContentValues();
-        // 키,값의 쌍으로 데이터 입력
         values.put("parkingLotName", parkingLotName);
         values.put("email", email);
         values.put("carSize", carSize);

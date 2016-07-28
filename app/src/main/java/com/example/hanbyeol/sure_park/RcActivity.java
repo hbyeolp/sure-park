@@ -115,9 +115,9 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
                     byteData = baos.toByteArray();
 
                     response = new String(byteData);
+                    System.out.println("rc get info "+response);
 
                     JSONObject responseJSON = new JSONObject(response);
-                    System.out.println("Code woejfwe"+response);
 
                     MainActivity.rev_id = (String) responseJSON.get("reservationID");
                     MainActivity.phoneNum = (String) responseJSON.get("phoneNumber");
@@ -127,7 +127,6 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
                     MainActivity.entranceTime = (String) responseJSON.get("entranceTime");
                     MainActivity.exitTime = (String) responseJSON.get("exitTime");
                     MainActivity.re_time = (String) responseJSON.get("reservationTime");
-                    System.out.println("get info: " +response);
                 } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
                     System.out.println("FOBIDDEN");
                 } else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){
@@ -145,10 +144,6 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             SimpleDateFormat fm = new SimpleDateFormat("Z");
-            d = new Date();
-            String aaa = "-04";
-            int a = Integer.parseInt(aaa);
-            System.out.println("dfsfsdfsdfsdf"    + aaa);
 
             text_email.setText(MainActivity.email);
             text_phonenum.setText(MainActivity.phoneNum);

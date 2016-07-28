@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity
     public static int item=0;
     public static String phoneNum;
     public static String access_token, token_type;
-    public static String ioc_id="1", rev_id, status="unreserved", pre_resvid;
+    public static String ioc_id, rev_id, status="unreserved", pre_resvid;
     public static String id, parkinglotname, email, entranceTime, exitTime, re_time;
     public static int car_size;
     int loc_select_state=0;
@@ -75,28 +75,9 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         searchView = (SearchView) findViewById(R.id.search_parkinglot);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
 
-                searchParkinglot = searchView.getQuery().toString();
-                System.out.println("Query"+searchParkinglot);
-                getList = new HttpGetList();
-                getList.execute();
-
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-
-                return true;
-            }
-        });
         searchView.setSubmitButtonEnabled(true);
-
+        loc_names = new String[0];
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -129,61 +110,87 @@ public class MainActivity extends AppCompatActivity
         m_Adapter = new ListViewParkinglotAdapter();
         listview.setAdapter(m_Adapter);
         m_Adapter.addItem("Parkinglot name");
-        helperCard = new CardDbOpenHelper(this);
-        helperCard.open();
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                                    if(status.equals("unreserved")) {
-                                                        if(helperCard.Count()>0) {
-                                                            System.out.println("helpercard"+helperCard.Count());
-                                                            AlertDialog.Builder alert_confirm = new AlertDialog.Builder(MainActivity.this);
-                                                            alert_confirm.setMessage("Would you like to use the stored card?").setCancelable(false).setPositiveButton("No",
-                                                                    new DialogInterface.OnClickListener() {
-                                                                        @Override
-                                                                        public void onClick(DialogInterface dialog, int which) {
-                                                                            Intent myIntent = new Intent(MainActivity.this, InputActivity.class);
-                                                                            startActivity(myIntent);
-                                                                        }
-                                                                    }).setNegativeButton("Yes",
-                                                                    new DialogInterface.OnClickListener() {
-                                                                        @Override
-                                                                        public void onClick(DialogInterface dialog, int which) {
-                                                                            helperCard.close();
-                                                                            Intent myIntent = new Intent(MainActivity.this, RecordCardActivity.class);
-                                                                            startActivity(myIntent);
-                                                                            return;
-                                                                        }
-                                                                    });
-                                                            AlertDialog alert = alert_confirm.create();
-                                                            alert.show();
-                                                        }
-                                                        else {
-                                                            Intent myIntent = new Intent(MainActivity.this, InputActivity.class);
-                                                            startActivity(myIntent);
-                                                        }
-                                                        if(loc_select_state==1) {
-                                                            if (loc_ids.length != 0 && loc_names.length != 0) {
-                                                                MainActivity.ioc_id = loc_ids[position];
-                                                                MainActivity.parkinglotname = loc_names[position];
-                                                                loc_select_state = 0;
-                                                            }
-                                                        }
-                                                    }
-                                                    else {
-                                                        AlertDialog.Builder alert_confirm = new AlertDialog.Builder(MainActivity.this);
-                                                        alert_confirm.setMessage("You already made a reservation").setCancelable(false).setPositiveButton("Confirm",
-                                                                new DialogInterface.OnClickListener() {
-                                                                    @Override
-                                                                    public void onClick(DialogInterface dialog, int which) {
+        m_Adapter.removeItem(1);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
 
-                                                                    }
-                                                                });
-                                                        AlertDialog alert = alert_confirm.create();
-                                                        alert.show();
-                                                    }
-                                                    helperCard.close();
-                                                }
-                                            });
+                searchParkinglot = searchView.getQuery().toString();
+                System.out.println("Query"+searchParkinglot);
+                m_Adapter.removeItem(loc_names.length);
+                getList = new HttpGetList();
+                getList.execute();
+                searchView.clearFocus();
+                searchView.setQuery("", false);
+                searchView.setIconified(true);
+                //InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                // imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+
+                return true;
+            }
+        });
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                helperCard = new CardDbOpenHelper(MainActivity.this);
+                helperCard.open();
+                if(status.equals("unreserved")) {
+                    if(helperCard.Count()>0) {
+                        System.out.println("helpercard"+helperCard.Count());
+                        AlertDialog.Builder alert_confirm = new AlertDialog.Builder(MainActivity.this);
+                        alert_confirm.setMessage("Would you like to use the stored card?").setCancelable(false).setPositiveButton("No",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent myIntent = new Intent(MainActivity.this, InputActivity.class);
+                                        startActivity(myIntent);
+                                    }
+                                }).setNegativeButton("Yes",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        helperCard.close();
+                                        Intent myIntent = new Intent(MainActivity.this, RecordCardActivity.class);
+                                        startActivity(myIntent);
+                                    }
+                                });
+                        AlertDialog alert = alert_confirm.create();
+                        alert.show();
+                    }
+                    else {
+                        Intent myIntent = new Intent(MainActivity.this, InputActivity.class);
+                        startActivity(myIntent);
+                    }
+                    if(loc_select_state==1) {
+                        if (loc_ids.length != 0 && loc_names.length != 0) {
+                            ioc_id = loc_ids[position];
+                            parkinglotname = loc_names[position];
+                            System.out.println("location id "+ioc_id);
+                            System.out.println("location name " +parkinglotname);
+                            loc_select_state = 0;
+                        }
+                    }
+                }
+                else {
+                    AlertDialog.Builder alert_confirm = new AlertDialog.Builder(MainActivity.this);
+                    alert_confirm.setMessage("You already made a reservation").setCancelable(false).setPositiveButton("Confirm",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+                    AlertDialog alert = alert_confirm.create();
+                    alert.show();
+                }
+                helperCard.close();
+            }
+        });
         checkPermissionPhone();
     }
 
@@ -200,7 +207,7 @@ public class MainActivity extends AppCompatActivity
             // app-defined int constant
 
         } else {
-            // 다음 부분은 항상 허용일 경우에 해당이 됩니다.
+            // ?ㅼ쓬 遺遺꾩? ??긽 ?덉슜??寃쎌슦???대떦???⑸땲??
             postlogin= new HttpPostLogin();
             postlogin.execute();
         }
@@ -227,7 +234,6 @@ public class MainActivity extends AppCompatActivity
             if(status.equals("reserved") || status.equals("parked") || status.equals("paying")) {
                 Intent intent = new Intent(MainActivity.this, RcActivity.class);
                 startActivity(intent);
-                helperCard.close();
             }
             else{
 
@@ -237,7 +243,6 @@ public class MainActivity extends AppCompatActivity
             if(status.equals("reserved") || status.equals("parked")) {
                 Intent intent = new Intent(MainActivity.this, HandoverActivity.class);
                 startActivity(intent);
-                helperCard.close();
             }else{
 
             }
@@ -246,7 +251,6 @@ public class MainActivity extends AppCompatActivity
             if(status.equals("reserved") || status.equals("parked")) {
                 Intent intent = new Intent(MainActivity.this, HereActivity.class);
                 startActivity(intent);
-                helperCard.close();
             }else{
 
             }
@@ -254,7 +258,6 @@ public class MainActivity extends AppCompatActivity
         if(id==R.id.nav_past_rc){
             Intent intent = new Intent(MainActivity.this, PastRcActivity.class);
             startActivity(intent);
-            helperCard.close();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -481,6 +484,9 @@ public class MainActivity extends AppCompatActivity
                     JSONObject json = sureparks.getJSONObject(i);
                     loc_names[i] = (String) json.get("parkingLotName");
                     loc_ids[i] = (String) json.get("parkingLotID");
+                    System.out.println("location names "+ loc_names[i]);
+                    System.out.println("location id "+ loc_ids[i]);
+
                     m_Adapter.addItem(loc_names[i]);
 
                 } catch (JSONException e) {

@@ -13,57 +13,57 @@ import java.util.ArrayList;
  * Created by hanbyeol on 2016-07-27.
  */
 public class ListViewParkinglotAdapter extends BaseAdapter {
-    // Adapter에 추가된 데이터를 저장하기 위한 ArrayList
+    // Adapter??異붽????곗씠?곕? ??ν븯湲??꾪븳 ArrayList
     private ArrayList<ListViewParkinglotItem> listViewItemList = new ArrayList<ListViewParkinglotItem>() ;
 
-    // ListViewAdapter의 생성자
+    // ListViewAdapter???앹꽦??
     public ListViewParkinglotAdapter() {
 
     }
 
-    // Adapter에 사용되는 데이터의 개수를 리턴. : 필수 구현
+    // Adapter???ъ슜?섎뒗 ?곗씠?곗쓽 媛쒖닔瑜?由ы꽩. : ?꾩닔 援ы쁽
     @Override
     public int getCount() {
         return listViewItemList.size() ;
     }
 
-    // position에 위치한 데이터를 화면에 출력하는데 사용될 View를 리턴. : 필수 구현
+    // position???꾩튂???곗씠?곕? ?붾㈃??異쒕젰?섎뒗???ъ슜??View瑜?由ы꽩. : ?꾩닔 援ы쁽
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final int pos = position;
         final Context context = parent.getContext();
 
-        // "listview_item" Layout을 inflate하여 convertView 참조 획득.
+        // "listview_item" Layout??inflate?섏뿬 convertView 李몄“ ?띾뱷.
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.listview_parkinglot_item, parent, false);
         }
 
-        // 화면에 표시될 View(Layout이 inflate된)으로부터 위젯에 대한 참조 획득
+        // ?붾㈃???쒖떆??View(Layout??inflate???쇰줈遺???꾩젽?????李몄“ ?띾뱷
         TextView titleTextView = (TextView) convertView.findViewById(R.id.textview_parkinglotname) ;
 
-        // Data Set(listViewItemList)에서 position에 위치한 데이터 참조 획득
+        // Data Set(listViewItemList)?먯꽌 position???꾩튂???곗씠??李몄“ ?띾뱷
         ListViewParkinglotItem listViewItem = listViewItemList.get(position);
 
-        // 아이템 내 각 위젯에 데이터 반영
+        // ?꾩씠????媛??꾩젽???곗씠??諛섏쁺
         titleTextView.setText(listViewItem.getTitle());
 
         return convertView;
     }
 
-    // 지정한 위치(position)에 있는 데이터와 관계된 아이템(row)의 ID를 리턴. : 필수 구현
+    // 吏?뺥븳 ?꾩튂(position)???덈뒗 ?곗씠?곗? 愿怨꾨맂 ?꾩씠??row)??ID瑜?由ы꽩. : ?꾩닔 援ы쁽
     @Override
     public long getItemId(int position) {
         return position ;
     }
 
-    // 지정한 위치(position)에 있는 데이터 리턴 : 필수 구현
+    // 吏?뺥븳 ?꾩튂(position)???덈뒗 ?곗씠??由ы꽩 : ?꾩닔 援ы쁽
     @Override
     public Object getItem(int position) {
         return listViewItemList.get(position) ;
     }
 
-    // 아이템 데이터 추가를 위한 함수. 개발자가 원하는대로 작성 가능.
+    // ?꾩씠???곗씠??異붽?瑜??꾪븳 ?⑥닔. 媛쒕컻?먭? ?먰븯?붾?濡??묒꽦 媛??
     public void addItem(String title) {
         ListViewParkinglotItem item = new ListViewParkinglotItem();
 
@@ -71,8 +71,9 @@ public class ListViewParkinglotAdapter extends BaseAdapter {
 
         listViewItemList.add(item);
     }
-    public void removeItem(String title){
-        ListViewParkinglotItem item = new ListViewParkinglotItem();
+    public void removeItem(int num){
         //listViewItemList.remove()
+        for(int i=0;i<num; i++)
+            listViewItemList.remove(i);
     }
 }

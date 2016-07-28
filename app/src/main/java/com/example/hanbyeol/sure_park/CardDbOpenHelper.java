@@ -21,7 +21,7 @@ public class CardDbOpenHelper {
     private Context mCtx;
     private class DatabaseHelper extends SQLiteOpenHelper {
 
-        // 생성자
+        // ?앹꽦??
         public DatabaseHelper(Context context, String name,
                               SQLiteDatabase.CursorFactory factory, int version) {
 
@@ -29,14 +29,14 @@ public class CardDbOpenHelper {
 
         }
 
-        // 최초 DB를 만들때 한번만 호출된다.
+        // 理쒖큹 DB瑜?留뚮뱾???쒕쾲留??몄텧?쒕떎.
         @Override
         public void onCreate(SQLiteDatabase db) {
             System.out.println(DataBases.CardCreateDB._CREATE);
             db.execSQL(DataBases.CardCreateDB._CREATE);
         }
 
-        // 버전이 업데이트 되었을 경우 DB를 다시 만들어 준다.
+        // 踰꾩쟾???낅뜲?댄듃 ?섏뿀??寃쎌슦 DB瑜??ㅼ떆 留뚮뱾??以??
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             db.execSQL("DROP TABLE IF EXISTS "+_TABLENAME);
@@ -60,20 +60,21 @@ public class CardDbOpenHelper {
 
     void Delete(int id) {
         int result = mDB.delete(_TABLENAME, "_id=?", new String[] {Integer.toString(id)});
+        System.out.println("card db delete");
     }
 
     void Update (String cardNumber, String cardFirstname, String cardLastname, String cardExpirationMonth, String cardExpirationYear, String cardValidationCode) {
         ContentValues values = new ContentValues();
         values.put("cardFirstname", cardFirstname);
-        values.put("cardLastname", cardLastname);         // 바꿀값
-        values.put("cardExpirationMonth", cardExpirationMonth); // 바꿀값
-        values.put("cardExpirationYear", cardExpirationYear); // 바꿀값
-        values.put("cardValidationCode", cardValidationCode); // 바꿀값
+        values.put("cardLastname", cardLastname);         // 諛붽?媛?
+        values.put("cardExpirationMonth", cardExpirationMonth); // 諛붽?媛?
+        values.put("cardExpirationYear", cardExpirationYear); // 諛붽?媛?
+        values.put("cardValidationCode", cardValidationCode); // 諛붽?媛?
 
         int result = mDB.update(_TABLENAME,
-                values,    // 뭐라고 변경할지 ContentValues 설정
-                "cardNumber=?", // 바꿀 항목을 찾을 조건절
-                new String[]{cardNumber});// 바꿀 항목으로 찾을 값 String 배열
+                values,    // 萸먮씪怨?蹂寃쏀븷吏 ContentValues ?ㅼ젙
+                "cardNumber=?", // 諛붽? ??ぉ??李얠쓣 議곌굔??
+                new String[]{cardNumber});// 諛붽? ??ぉ?쇰줈 李얠쓣 媛?String 諛곗뿴
     }
 
     int Count () {
@@ -94,7 +95,7 @@ public class CardDbOpenHelper {
 
     void Insert (String cardNumber, String cardFirstname, String cardLastname, String cardExpirationMonth, String cardExpirationYear, String cardValidationCode) {
         ContentValues values = new ContentValues();
-        // 키,값의 쌍으로 데이터 입력
+        // ??媛믪쓽 ?띿쑝濡??곗씠???낅젰
         values.put("cardNumber", cardNumber);
         values.put("cardFirstname", cardFirstname);
         values.put("cardLastname", cardLastname);

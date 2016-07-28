@@ -75,11 +75,12 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         edit_phone.setClickable(false);
         edit_date.setFocusable(false);
         edit_date.setClickable(false);
+
         edit_card_num1.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // 입력되는 텍스트에 변화가 있을 때
+                // ?낅젰?섎뒗 ?띿뒪?몄뿉 蹂?붽? ?덉쓣 ??
                 if(s.length()==4){
                     edit_card_num2.requestFocus();
                     InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
@@ -88,18 +89,18 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             }
             @Override
             public void afterTextChanged(Editable arg0) {
-                // 입력이 끝났을 때
+                // ?낅젰???앸궗????
             }
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // 입력하기 전에
+                // ?낅젰?섍린 ?꾩뿉
             }
         });
         edit_card_num2.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // 입력되는 텍스트에 변화가 있을 때
+                // ?낅젰?섎뒗 ?띿뒪?몄뿉 蹂?붽? ?덉쓣 ??
                 if(s.length()==4){
                     edit_card_num3.requestFocus();
                     InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
@@ -108,18 +109,18 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             }
             @Override
             public void afterTextChanged(Editable arg0) {
-                // 입력이 끝났을 때
+                // ?낅젰???앸궗????
             }
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // 입력하기 전에
+                // ?낅젰?섍린 ?꾩뿉
             }
         });
         edit_card_num3.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // 입력되는 텍스트에 변화가 있을 때
+                // ?낅젰?섎뒗 ?띿뒪?몄뿉 蹂?붽? ?덉쓣 ??
                 if(s.length()==4){
                     edit_card_num4.requestFocus();
                     InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
@@ -128,18 +129,18 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             }
             @Override
             public void afterTextChanged(Editable arg0) {
-                // 입력이 끝났을 때
+                // ?낅젰???앸궗????
             }
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // 입력하기 전에
+                // ?낅젰?섍린 ?꾩뿉
             }
         });
         edit_card_num4.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // 입력되는 텍스트에 변화가 있을 때
+                // ?낅젰?섎뒗 ?띿뒪?몄뿉 蹂?붽? ?덉쓣 ??
                 if(s.length()==4){
                     edit_card_mon.requestFocus();
                     InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
@@ -148,18 +149,18 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             }
             @Override
             public void afterTextChanged(Editable arg0) {
-                // 입력이 끝났을 때
+                // ?낅젰???앸궗????
             }
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // 입력하기 전에
+                // ?낅젰?섍린 ?꾩뿉
             }
         });
         edit_card_mon.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // 입력되는 텍스트에 변화가 있을 때
+                // ?낅젰?섎뒗 ?띿뒪?몄뿉 蹂?붽? ?덉쓣 ??
                 if(s.length()==2){
                     edit_card_year.requestFocus();
                     InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
@@ -168,18 +169,18 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             }
             @Override
             public void afterTextChanged(Editable arg0) {
-                // 입력이 끝났을 때
+                // ?낅젰???앸궗????
             }
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // 입력하기 전에
+                // ?낅젰?섍린 ?꾩뿉
             }
         });
         edit_card_year.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // 입력되는 텍스트에 변화가 있을 때
+                // ?낅젰?섎뒗 ?띿뒪?몄뿉 蹂?붽? ?덉쓣 ??
                 if(s.length()==2){
                     edit_card_cvc.requestFocus();
                     InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
@@ -188,18 +189,18 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             }
             @Override
             public void afterTextChanged(Editable arg0) {
-                // 입력이 끝났을 때
+                // ?낅젰???앸궗????
             }
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // 입력하기 전에
+                // ?낅젰?섍린 ?꾩뿉
             }
         });
         edit_card_cvc.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // 입력되는 텍스트에 변화가 있을 때
+                // ?낅젰?섎뒗 ?띿뒪?몄뿉 蹂?붽? ?덉쓣 ??
                 if(s.length()==3){
                     edit_card_firstname.requestFocus();
                     InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
@@ -208,11 +209,11 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             }
             @Override
             public void afterTextChanged(Editable arg0) {
-                // 입력이 끝났을 때
+                // ?낅젰???앸궗????
             }
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // 입력하기 전에
+                // ?낅젰?섍린 ?꾩뿉
             }
         });
 
@@ -388,6 +389,10 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             case R.id.button_cardchek:
                 HttpPostCard postCard= new HttpPostCard();
                 postCard.execute();
+
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                if(imm.showSoftInput(edit_card_lastname,0))
+                    imm.hideSoftInputFromWindow(edit_card_lastname.getWindowToken(), 0);
                 break;
             case R.id.button_reserve:
                 if(available_card==1) {
@@ -435,6 +440,8 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         edit_card_num4.setFocusable(false);
         edit_card_num4.setClickable(false);
         edit_card_cvc.setFocusable(false);
+        edit_card_cvc.setClickable(false);
+        edit_card_mon.setFocusable(false);
         edit_card_mon.setClickable(false);
         edit_card_year.setFocusable(false);
         edit_card_year.setClickable(false);
@@ -453,6 +460,8 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         edit_card_num4.setFocusable(true);
         edit_card_num4.setClickable(true);
         edit_card_cvc.setFocusable(true);
+        edit_card_cvc.setClickable(true);
+        edit_card_mon.setFocusable(true);
         edit_card_mon.setClickable(true);
         edit_card_year.setFocusable(true);
         edit_card_year.setClickable(true);
@@ -463,8 +472,6 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
     }
     public String getReserv_time(int rvhour, int rvmin){
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        TimeZone zone = TimeZone.getTimeZone("GMT");
-        fm.setTimeZone(zone);
         c.add(Calendar.MINUTE, -curMin);
         c.add(Calendar.SECOND, -curSec);
         c.add(Calendar.HOUR, rvhour);
@@ -759,9 +766,6 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                 conn.setDoOutput(true);
                 conn.setDoInput(true);
 
-                TelephonyManager telManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-                MainActivity.phoneNum = telManager.getLine1Number();
-                MainActivity.phoneNum=MainActivity.phoneNum.replace("+","");
                 System.out.println(MainActivity.phoneNum);
                 JSONObject json = new JSONObject();
                 json.put("phoneNumber", MainActivity.phoneNum);
@@ -974,6 +978,8 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                 String response;
 
                 int responseCode = conn.getResponseCode();
+                System.out.println("Input getparkinglot: " + responseCode);
+
                 if(responseCode == HttpURLConnection.HTTP_OK) {
 
                     is = conn.getInputStream();
@@ -987,7 +993,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                     byteData = baos.toByteArray();
 
                     response = new String(byteData);
-
+                    System.out.println("Input getparkinglot: " + response);
                     JSONObject responseJSON = new JSONObject(response);
 
                     MainActivity.parkinglotname = (String) responseJSON.get("parkingLotName");

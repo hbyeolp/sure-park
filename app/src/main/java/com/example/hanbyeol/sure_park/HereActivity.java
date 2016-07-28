@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class HereActivity extends AppCompatActivity implements View.OnClickListener {
-    String gateresult="fail";
+    String gateresult = "fail";
     private ReservationDbOpenHelper helperReservation;
 
     @Override
@@ -30,7 +30,7 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_here);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-       ImageButton btnhere=(ImageButton) findViewById (R.id.button_imhere);
+        ImageButton btnhere = (ImageButton) findViewById(R.id.button_imhere);
         btnhere.setOnClickListener(this);
 
         helperReservation = new ReservationDbOpenHelper(this);
@@ -54,7 +54,7 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                HttpGetGate getGate= new HttpGetGate();
+                                HttpGetGate getGate = new HttpGetGate();
                                 getGate.execute();
                                 return;
                             }
@@ -64,25 +64,27 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         helperReservation.close();
     }
+
     public class HttpGetGate extends AsyncTask<String, Void, String> {
         @Override
         public String doInBackground(String... params) {
             try {
-                URL url = new URL(MainActivity.address+"opengate/" + MainActivity.phoneNum+"/"+MainActivity.rev_id);
-                HttpURLConnection   conn    = null;
-                OutputStream          os   = null;
-                InputStream           is   = null;
+                URL url = new URL(MainActivity.address + "opengate/" + MainActivity.phoneNum + "/" + MainActivity.rev_id);
+                HttpURLConnection conn = null;
+                OutputStream os = null;
+                InputStream is = null;
                 ByteArrayOutputStream baos = null;
-                conn = (HttpURLConnection)url.openConnection();
+                conn = (HttpURLConnection) url.openConnection();
                 conn.setConnectTimeout(5000);
                 conn.setReadTimeout(5000);
                 conn.setRequestMethod("GET");
-                conn.setRequestProperty("Authorization", MainActivity.token_type+" "+ MainActivity.access_token);
+                conn.setRequestProperty("Authorization", MainActivity.token_type + " " + MainActivity.access_token);
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setRequestProperty("Accept", "application/json");
                 conn.setDoInput(true);
@@ -91,30 +93,29 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
                 String response;
 
                 int responseCode = conn.getResponseCode();
-                System.out.println("Herer code "+responseCode);
+                System.out.println("Herer code " + responseCode);
 
-                if(responseCode == HttpURLConnection.HTTP_OK) {
+                if (responseCode == HttpURLConnection.HTTP_OK) {
 
                     is = conn.getInputStream();
                     baos = new ByteArrayOutputStream();
                     byte[] byteBuffer = new byte[1024];
                     byte[] byteData = null;
                     int nLength = 0;
-                    while((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
+                    while ((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
                         baos.write(byteBuffer, 0, nLength);
                     }
                     byteData = baos.toByteArray();
 
                     response = new String(byteData);
-                    System.out.println("Here response "+response);
+                    System.out.println("Here response " + response);
 
                     JSONObject responseJSON = new JSONObject(response);
                     gateresult = (String) responseJSON.get("result");
-                    System.out.println("Here"+ gateresult);
 
-                } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
+                } else if (responseCode == HttpURLConnection.HTTP_FORBIDDEN) {
                     System.out.println("FOBIDDEN");
-                } else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){
+                } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
                     System.out.println("UNAUTHORIZED");
                 }
 
@@ -127,31 +128,27 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
             return null;
 
         }
+
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            if(gateresult.equals("success")) {
+            if (gateresult.equals("success")) {
                 AlertDialog.Builder card_alert_confirm = new AlertDialog.Builder(HereActivity.this);
                 card_alert_confirm.setMessage("Gate Open Success").setCancelable(false).setPositiveButton("Confirm",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // 'YES'
-                                gateresult="fail";
+                                gateresult = "fail";
                                 HttpPostLogin postLogin = new HttpPostLogin();
                                 postLogin.execute();
-                                if(MainActivity.status.equals("reserved"))
-                                    helperReservation.Insert(MainActivity.parkinglotname, MainActivity.email, MainActivity.car_size, MainActivity.re_time,  MainActivity.entranceTime, MainActivity.exitTime);
-                                else if(MainActivity.status.equals("parked"))
-                                    helperReservation.Update(MainActivity.pre_resvid, MainActivity.parkinglotname, MainActivity.email, MainActivity.car_size, MainActivity.re_time,  MainActivity.entranceTime, MainActivity.exitTime);
                                 finish();
                             }
                         });
                 AlertDialog alert1 = card_alert_confirm.create();
                 alert1.show();
-            }
-            else if(gateresult.equals("fail")){
+            } else if (gateresult.equals("fail")) {
                 AlertDialog.Builder card_alert_noconfirm = new AlertDialog.Builder(HereActivity.this);
                 card_alert_noconfirm.setMessage("Gate Open Fail").setCancelable(false).setPositiveButton("Confirm",
                         new DialogInterface.OnClickListener() {
@@ -170,14 +167,14 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public String doInBackground(String... params) {
             try {
-                URL url = new URL(MainActivity.address+"drivers");
-                HttpURLConnection   conn    = null;
+                URL url = new URL(MainActivity.address + "drivers");
+                HttpURLConnection conn = null;
 
-                OutputStream          os   = null;
-                InputStream           is   = null;
+                OutputStream os = null;
+                InputStream is = null;
                 ByteArrayOutputStream baos = null;
 
-                conn = (HttpURLConnection)url.openConnection();
+                conn = (HttpURLConnection) url.openConnection();
                 conn.setConnectTimeout(5000);
                 conn.setReadTimeout(5000);
                 conn.setRequestMethod("POST");
@@ -200,14 +197,14 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
 
                 int responseCode = conn.getResponseCode();
 
-                if(responseCode == HttpURLConnection.HTTP_OK) {
+                if (responseCode == HttpURLConnection.HTTP_OK) {
 
                     is = conn.getInputStream();
                     baos = new ByteArrayOutputStream();
                     byte[] byteBuffer = new byte[1024];
                     byte[] byteData = null;
                     int nLength = 0;
-                    while((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
+                    while ((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
                         baos.write(byteBuffer, 0, nLength);
                     }
                     byteData = baos.toByteArray();
@@ -218,7 +215,6 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
                     String user_status = (String) responseJSON.get("driverRegistration");
                     MainActivity.phoneNum = (String) responseJSON.get("phoneNumber");
                     MainActivity.id = (String) responseJSON.get("identificationNumber");
-                    MainActivity.status = (String) responseJSON.get("state");
                 }
 
             } catch (Exception e) {
@@ -229,6 +225,7 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
             return null;
 
         }
+
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
@@ -241,23 +238,23 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public String doInBackground(String... params) {
             try {
-                URL url = new URL(MainActivity.address+"oauth/token");
-                HttpURLConnection   conn    = null;
-                OutputStream          os   = null;
-                InputStream           is   = null;
+                URL url = new URL(MainActivity.address + "oauth/token");
+                HttpURLConnection conn = null;
+                OutputStream os = null;
+                InputStream is = null;
                 ByteArrayOutputStream baos = null;
-                conn = (HttpURLConnection)url.openConnection();
+                conn = (HttpURLConnection) url.openConnection();
                 conn.setConnectTimeout(5000);
                 conn.setReadTimeout(5000);
                 conn.setRequestMethod("POST");
-                String basicAuth ="Basic " + Base64.encodeToString(("user_driver:123456").getBytes(), Base64.NO_WRAP);
+                String basicAuth = "Basic " + Base64.encodeToString(("user_driver:123456").getBytes(), Base64.NO_WRAP);
                 conn.setRequestProperty("Authorization", basicAuth);
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestProperty("Accept", "application/json");
                 conn.setDoOutput(true);
                 conn.setDoInput(true);
 
-                String req_token= "password="+MainActivity.id+"&username="+MainActivity.phoneNum+"&grant_type=password&scope=read%20write&client_secret=123456&client_id=user_driver";
+                String req_token = "password=" + MainActivity.id + "&username=" + MainActivity.phoneNum + "&grant_type=password&scope=read%20write&client_secret=123456&client_id=user_driver";
 
                 os = conn.getOutputStream();
                 os.write(req_token.getBytes());
@@ -268,14 +265,14 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
 
                 int responseCode = conn.getResponseCode();
 
-                if(responseCode == HttpURLConnection.HTTP_OK) {
+                if (responseCode == HttpURLConnection.HTTP_OK) {
 
                     is = conn.getInputStream();
                     baos = new ByteArrayOutputStream();
                     byte[] byteBuffer = new byte[1024];
                     byte[] byteData = null;
                     int nLength = 0;
-                    while((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
+                    while ((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
                         baos.write(byteBuffer, 0, nLength);
                     }
                     byteData = baos.toByteArray();
@@ -290,9 +287,9 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
                     int expires_in = (int) responseJSON.get("expires_in");
                     String scope = (String) responseJSON.get("scope");
 
-                } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
+                } else if (responseCode == HttpURLConnection.HTTP_FORBIDDEN) {
                     System.out.println("FOBIDDEN");
-                } else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){
+                } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
                     System.out.println("UNAUTHORIZED");
                 }
 
@@ -304,6 +301,7 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
             return null;
 
         }
+
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
@@ -316,16 +314,16 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public String doInBackground(String... params) {
             try {
-                URL url = new URL(MainActivity.address+"drivers/"+MainActivity.phoneNum);
-                HttpURLConnection   conn    = null;
-                OutputStream          os   = null;
-                InputStream           is   = null;
+                URL url = new URL(MainActivity.address + "drivers/" + MainActivity.phoneNum);
+                HttpURLConnection conn = null;
+                OutputStream os = null;
+                InputStream is = null;
                 ByteArrayOutputStream baos = null;
-                conn = (HttpURLConnection)url.openConnection();
+                conn = (HttpURLConnection) url.openConnection();
                 conn.setConnectTimeout(5000);
                 conn.setReadTimeout(5000);
                 conn.setRequestMethod("GET");
-                conn.setRequestProperty("Authorization", MainActivity.token_type+" "+ MainActivity.access_token);
+                conn.setRequestProperty("Authorization", MainActivity.token_type + " " + MainActivity.access_token);
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setRequestProperty("Accept", "application/json");
                 conn.setDoInput(true);
@@ -334,14 +332,14 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
                 String response;
 
                 int responseCode = conn.getResponseCode();
-                if(responseCode == HttpURLConnection.HTTP_OK) {
+                if (responseCode == HttpURLConnection.HTTP_OK) {
 
                     is = conn.getInputStream();
                     baos = new ByteArrayOutputStream();
                     byte[] byteBuffer = new byte[1024];
                     byte[] byteData = null;
                     int nLength = 0;
-                    while((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
+                    while ((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
                         baos.write(byteBuffer, 0, nLength);
                     }
                     byteData = baos.toByteArray();
@@ -354,9 +352,9 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
                     MainActivity.phoneNum = (String) responseJSON.get("phoneNumber");
                     MainActivity.status = (String) responseJSON.get("state");
 
-                } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
+                } else if (responseCode == HttpURLConnection.HTTP_FORBIDDEN) {
                     System.out.println("FOBIDDEN");
-                } else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){
+                } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
                     System.out.println("UNAUTHORIZED");
                 }
                 conn.disconnect();
@@ -367,6 +365,7 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
 
             return null;
         }
+
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
@@ -374,11 +373,12 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
             getInfo.execute();
         }
     }
+
     public class HttpGetInfo extends AsyncTask<String, Void, String> {
         @Override
         public String doInBackground(String... params) {
             try {
-                URL url = new URL(MainActivity.address+"reservations/"+MainActivity.rev_id);
+                URL url = new URL(MainActivity.address+"reservations/"+MainActivity.phoneNum+"/"+MainActivity.rev_id);
                 HttpURLConnection   conn    = null;
                 OutputStream          os   = null;
                 InputStream           is   = null;
@@ -409,9 +409,9 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
                     byteData = baos.toByteArray();
 
                     response = new String(byteData);
+                    System.out.println("here get info "+response);
 
                     JSONObject responseJSON = new JSONObject(response);
-                    System.out.println("Code woejfwe"+response);
 
                     MainActivity.rev_id = (String) responseJSON.get("reservationID");
                     MainActivity.phoneNum = (String) responseJSON.get("phoneNumber");
@@ -421,7 +421,6 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
                     MainActivity.entranceTime = (String) responseJSON.get("entranceTime");
                     MainActivity.exitTime = (String) responseJSON.get("exitTime");
                     MainActivity.re_time = (String) responseJSON.get("reservationTime");
-
                 } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
                     System.out.println("FOBIDDEN");
                 } else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){
@@ -435,10 +434,17 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
 
             return null;
         }
+
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-               helperReservation.close();
+            System.out.println("Here status : "+MainActivity.status);
+            if (MainActivity.status.equals("parked"))
+                helperReservation.Insert(MainActivity.parkinglotname, MainActivity.email, MainActivity.car_size, MainActivity.re_time, MainActivity.entranceTime, MainActivity.exitTime);
+            else
+                helperReservation.Update(MainActivity.pre_resvid, MainActivity.parkinglotname, MainActivity.email, MainActivity.car_size, MainActivity.re_time, MainActivity.entranceTime, MainActivity.exitTime);
+            System.out.println("helper Reservation");
+            helperReservation.close();
         }
     }
 }

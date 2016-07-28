@@ -14,9 +14,11 @@
     android:weightSum="1">
 
     <ImageButton
-        android:layout_width="154dp"
-        android:layout_height="154dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#00ff0000"
         android:id="@+id/button_handover"
+        android:src="@drawable/handover_orange"
         android:layout_gravity="center" />
 
     <EditText

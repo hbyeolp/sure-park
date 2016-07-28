@@ -1,6 +1,9 @@
 package com.example.hanbyeol.sure_park;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,27 +19,25 @@ import java.util.ArrayList;
  * Created by hanbyeol on 2016-07-27.
  */
 public class ListViewCardAdapter extends BaseAdapter {
-    // Adapter에 추가된 데이터를 저장하기 위한 ArrayList
+
+    CardDbOpenHelper cardDbOpenHelper;
+    boolean del_boolean=false;
     private ArrayList<ListViewCardItem> listViewItemList = new ArrayList<ListViewCardItem>() ;
 
-    // ListViewAdapter의 생성자
     public ListViewCardAdapter() {
 
     }
 
-    // Adapter에 사용되는 데이터의 개수를 리턴. : 필수 구현
     @Override
     public int getCount() {
         return listViewItemList.size() ;
     }
 
-    // position에 위치한 데이터를 화면에 출력하는데 사용될 View를 리턴. : 필수 구현
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final int pos = position;
         final Context context = parent.getContext();
 
-        // "listview_item" Layout을 inflate하여 convertView 참조 획득.
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.listview_card_item, parent, false);
@@ -46,19 +47,48 @@ public class ListViewCardAdapter extends BaseAdapter {
         TextView cardDateView = (TextView) convertView.findViewById(R.id.textView_card_Expiration);
         TextView cardCodeView = (TextView) convertView.findViewById(R.id.textView_card_code);
         ImageButton btn_delete = (ImageButton) convertView.findViewById(R.id.button_delete);
+        btn_delete.setTag(position);
         btn_delete.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                System.out.println("iowjfoiwejfiowejfwe");
-                CardDbOpenHelper cardDbOpenHelper = new CardDbOpenHelper(context);
+            public void onClick(final View v) {
+                System.out.println("delete button click");
+                cardDbOpenHelper = new CardDbOpenHelper(context);
                 cardDbOpenHelper.open();
-                cardDbOpenHelper.Delete(MainActivity.item);
+                AlertDialog.Builder alert_confirm = new AlertDialog.Builder(context);
+                alert_confirm.setMessage("Would you like to delete the stored card information?").setCancelable(false).setPositiveButton("No",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        }).setNegativeButton("Yes",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                System.out.println("item " + ((int)v.getTag()+1));
+                                cardDbOpenHelper.Delete((int)v.getTag()+1);
+                                listViewItemList.remove((int)v.getTag()+1);
+                                del_boolean=true;
+                            }
+                        });
+                AlertDialog alert = alert_confirm.create();
+                alert.show();
+                if(del_boolean){
+                    AlertDialog.Builder alert_confirm1 = new AlertDialog.Builder(context);
+                    alert_confirm.setMessage("Delete Complete").setCancelable(false).setPositiveButton("Confirm",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    del_boolean=false;
+                                }
+                            });
+                    AlertDialog alert1 = alert_confirm1.create();
+                    alert1.show();
+                }
                 cardDbOpenHelper.close();
             }
         });;
-        // Data Set(listViewItemList)에서 position에 위치한 데이터 참조 획득
         ListViewCardItem listViewItem = listViewItemList.get(position);
 
-        // 아이템 내 각 위젯에 데이터 반영
         cardNumView.setText(listViewItem.getCardnum());
         cardNameView.setText(listViewItem.getCardname());
         cardDateView.setText(listViewItem.getCarddate());
@@ -67,19 +97,17 @@ public class ListViewCardAdapter extends BaseAdapter {
         return convertView;
     }
 
-    // 지정한 위치(position)에 있는 데이터와 관계된 아이템(row)의 ID를 리턴. : 필수 구현
+    // 吏?뺥븳 ?꾩튂(position)???덈뒗 ?곗씠?곗? 愿怨꾨맂 ?꾩씠??row)??ID瑜?由ы꽩. : ?꾩닔 援ы쁽
     @Override
     public long getItemId(int position) {
         return position ;
     }
 
-    // 지정한 위치(position)에 있는 데이터 리턴 : 필수 구현
     @Override
     public Object getItem(int position) {
         return listViewItemList.get(position) ;
     }
 
-    // 아이템 데이터 추가를 위한 함수. 개발자가 원하는대로 작성 가능.
     public void addItem(String cardnum, String desc, String carddate, String cvc) {
         ListViewCardItem item = new ListViewCardItem();
 
@@ -90,5 +118,4 @@ public class ListViewCardAdapter extends BaseAdapter {
 
         listViewItemList.add(item);
     }
-
 }
