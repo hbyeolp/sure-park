@@ -11,7 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class PastRcActivity extends AppCompatActivity {
-    ArrayAdapter m_Adapter;
+    ListViewReservationAdapter m_Adapter;
     ListView listview;
     ReservationDbOpenHelper helperReservation;
     @Override
@@ -25,7 +25,7 @@ public class PastRcActivity extends AppCompatActivity {
         helperReservation.open();
 
         listview = (ListView)findViewById(R.id.listView_pre_rc);
-        m_Adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1);
+        m_Adapter = new ListViewReservationAdapter();
         listview.setAdapter(m_Adapter);
         helperReservation.UpdateListView(m_Adapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {

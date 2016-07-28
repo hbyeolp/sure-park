@@ -6,12 +6,18 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import org.json.JSONObject;
 
@@ -66,6 +72,168 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         edit_phone.setClickable(false);
         edit_date.setFocusable(false);
         edit_date.setClickable(false);
+        edit_card_num1.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // 입력되는 텍스트에 변화가 있을 때
+                if(s.length()==4){
+                    edit_card_num2.requestFocus();
+                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(edit_card_num2, 0);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                // 입력이 끝났을 때
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // 입력하기 전에
+            }
+        });
+        edit_card_num2.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // 입력되는 텍스트에 변화가 있을 때
+                if(s.length()==4){
+                    edit_card_num3.requestFocus();
+                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(edit_card_num3, 0);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                // 입력이 끝났을 때
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // 입력하기 전에
+            }
+        });
+        edit_card_num3.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // 입력되는 텍스트에 변화가 있을 때
+                if(s.length()==4){
+                    edit_card_num4.requestFocus();
+                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(edit_card_num4, 0);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                // 입력이 끝났을 때
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // 입력하기 전에
+            }
+        });
+        edit_card_num4.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // 입력되는 텍스트에 변화가 있을 때
+                if(s.length()==4){
+                    edit_card_mon.requestFocus();
+                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(edit_card_mon, 0);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                // 입력이 끝났을 때
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // 입력하기 전에
+            }
+        });
+        edit_card_mon.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // 입력되는 텍스트에 변화가 있을 때
+                if(s.length()==2){
+                    edit_card_year.requestFocus();
+                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(edit_card_year, 0);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                // 입력이 끝났을 때
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // 입력하기 전에
+            }
+        });
+        edit_card_year.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // 입력되는 텍스트에 변화가 있을 때
+                if(s.length()==2){
+                    edit_card_cvc.requestFocus();
+                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(edit_card_cvc, 0);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                // 입력이 끝났을 때
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // 입력하기 전에
+            }
+        });
+        edit_card_cvc.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // 입력되는 텍스트에 변화가 있을 때
+                if(s.length()==3){
+                    edit_card_firstname.requestFocus();
+                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(edit_card_firstname, 0);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                // 입력이 끝났을 때
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // 입력하기 전에
+            }
+        });
+
+        edit_card_firstname.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    edit_card_lastname.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(edit_card_lastname, 0);
+                }
+                return false;
+            }
+        });
+        edit_card_lastname.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(edit_card_lastname.getWindowToken(), 0);
+                }
+                return false;
+            }
+        });
         Button btncardcheck=(Button)findViewById(R.id.button_cardchek);
         btncardcheck.setOnClickListener(this);
         Button btnrev=(Button)findViewById(R.id.button_reserve);
@@ -208,7 +376,6 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
     }
     @Override
     public void onClick(View v) {
@@ -540,7 +707,9 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                                 revResult="fail";
                                 HttpPostLogin postLogin = new HttpPostLogin();
                                 postLogin.execute();
-                                helperCard.Insert(MainActivity.cardnum, edit_card_lastname.getText().toString(), edit_card_firstname.getText().toString(), MainActivity.cardmon, MainActivity.cardyear, MainActivity.cardcode);
+                                HttpGetParkinglot getParkinglot = new HttpGetParkinglot();
+                                getParkinglot.execute();
+                                helperCard.Insert(MainActivity.cardnum, edit_card_firstname.getText().toString(),edit_card_lastname.getText().toString(), MainActivity.cardmon, MainActivity.cardyear, MainActivity.cardcode);
                                 helperCard.close();
                                 available_card=0;
                                 finish();
@@ -645,8 +814,8 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                 InputStream           is   = null;
                 ByteArrayOutputStream baos = null;
                 conn = (HttpURLConnection)url.openConnection();
-                conn.setConnectTimeout(10000);
-                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Authorization", MainActivity.token_type+" "+ MainActivity.access_token);
                 conn.setRequestProperty("Content-Type", "application/json");
@@ -676,6 +845,66 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                     MainActivity.rev_id = (String) responseJSON.get("reservationID");
                     MainActivity.phoneNum = (String) responseJSON.get("phoneNumber");
                     MainActivity.status = (String) responseJSON.get("state");
+
+                } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
+                    System.out.println("FOBIDDEN");
+                } else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){
+                    System.out.println("UNAUTHORIZED");
+                }
+                conn.disconnect();
+            } catch (Exception e) {
+                System.out.println("error");
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+        }
+    }
+
+    public class HttpGetParkinglot extends AsyncTask<String, Void, String> {
+        @Override
+        public String doInBackground(String... params) {
+            try {
+                URL url = new URL(MainActivity.address+"sureparks/"+MainActivity.ioc_id);
+                HttpURLConnection   conn    = null;
+                OutputStream          os   = null;
+                InputStream           is   = null;
+                ByteArrayOutputStream baos = null;
+                conn = (HttpURLConnection)url.openConnection();
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Authorization", MainActivity.token_type+" "+ MainActivity.access_token);
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoInput(true);
+                conn.connect();
+
+                String response;
+
+                int responseCode = conn.getResponseCode();
+                if(responseCode == HttpURLConnection.HTTP_OK) {
+
+                    is = conn.getInputStream();
+                    baos = new ByteArrayOutputStream();
+                    byte[] byteBuffer = new byte[1024];
+                    byte[] byteData = null;
+                    int nLength = 0;
+                    while((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
+                        baos.write(byteBuffer, 0, nLength);
+                    }
+                    byteData = baos.toByteArray();
+
+                    response = new String(byteData);
+
+                    JSONObject responseJSON = new JSONObject(response);
+
+                    MainActivity.parkinglotname = (String) responseJSON.get("parkingLotName");
 
                 } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
                     System.out.println("FOBIDDEN");

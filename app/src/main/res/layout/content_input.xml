@@ -14,40 +14,77 @@
     tools:showIn="@layout/activity_input"
     android:weightSum="1">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="phone"
-        android:ems="10"
-        android:id="@+id/input_phone"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="100px"
-        android:layout_marginLeft="50px"
-        android:layout_marginRight="50px"
-        android:layout_marginBottom="10px"
-        android:hint="Phone Number (Automatic)" />
 
-    <EditText
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:ems="10"
-        android:id="@+id/input_email"
-        android:layout_marginLeft="50px"
-        android:layout_marginRight="50px"
-        android:layout_marginBottom="10px"
-        android:hint="Email (User input)" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Reservation"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        android:textColor="#505050"
+        android:textSize="24dp"
+        android:id="@+id/titleview" />
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="50px"
-        android:layout_marginRight="50px"
-        android:layout_marginBottom="10px">
+        android:layout_marginTop="25dp"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone Number"
+            android:id="@+id/textView2"
+            android:textSize="16dp"
+            android:textStyle="bold"/>
 
         <EditText
-            android:layout_width="130dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:id="@+id/input_phone"
+            android:hint="Phone Number (Automatic)" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="E-mail"
+            android:textSize="16dp"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:layout_width="290dp"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:id="@+id/input_email"
+            android:hint="Email (User input)" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date/Time"
+            android:textSize="16dp"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:inputType="date"
             android:ems="10"
@@ -55,33 +92,51 @@
             android:hint="date (automatic)" />
 
         <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="170dp"
+            android:layout_height="28dp"
             android:id="@+id/input_time"
             android:prompt="@string/time"
             android:spinnerMode="dropdown" />
     </LinearLayout>
 
-    <Spinner
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/input_carsize"
-        android:layout_marginLeft="50px"
-        android:layout_marginRight="50px"
-        android:layout_marginBottom="10px"
-        android:entries="@array/car_size"
-        android:spinnerMode="dropdown" />
+        android:layout_margin="10dp"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Car Size"
+            android:textSize="16dp"
+            android:textStyle="bold"/>
+
+        <Spinner
+            android:layout_width="280dp"
+            android:layout_height="28dp"
+            android:id="@+id/input_carsize"
+            android:entries="@array/car_size"
+            android:gravity="center_horizontal"
+            android:spinnerMode="dropdown" />
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="50px"
-        android:layout_marginRight="50px"
-        android:layout_marginBottom="10px">
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Card Number"
+            android:textSize="16dp"
+            android:textStyle="bold"/>
 
         <EditText
-            android:layout_width="125px"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:id="@+id/input_card1"
             android:inputType="number"
@@ -97,7 +152,7 @@
             android:layout_marginRight="15px"/>
 
         <EditText
-            android:layout_width="125px"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:id="@+id/input_card2"
             android:inputType="number"
@@ -113,7 +168,7 @@
             android:layout_marginRight="15px"/>
 
         <EditText
-            android:layout_width="125px"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:id="@+id/input_card3"
             android:inputType="number"
@@ -129,7 +184,7 @@
             android:layout_marginRight="15px"/>
 
         <EditText
-            android:layout_width="125px"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:id="@+id/input_card4"
             android:inputType="number"
@@ -141,74 +196,95 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="50px"
-        android:layout_marginRight="50px"
-        android:layout_marginBottom="10px">
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Month"
+            android:textSize="16dp"
+            android:layout_marginRight="5dp"
+            android:textStyle="bold"/>
 
         <EditText
-            android:layout_width="150px"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:id="@+id/input_month"
-            android:layout_marginRight="10px"
+            android:layout_marginRight="10dp"
             android:inputType="number"
             android:maxLength="2"
             android:hint="month" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Year"
+            android:textSize="16dp"
+            android:layout_marginRight="5dp"
+            android:textStyle="bold"/>
+
         <EditText
-            android:layout_width="150px"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:id="@+id/input_year"
-            android:layout_marginRight="10px"
+            android:layout_marginRight="10dp"
             android:inputType="number"
             android:maxLength="2"
             android:hint="year" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CVC"
+            android:textSize="16dp"
+            android:layout_marginRight="5dp"
+            android:textStyle="bold"/>
+
         <EditText
-            android:layout_width="150px"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:id="@+id/input_cvc"
             android:layout_marginRight="20px"
             android:inputType="number"
             android:maxLength="3"
             android:hint="cvc" />
-
     </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="50px"
-        android:layout_marginRight="50px"
-        android:layout_marginBottom="10px"
-        android:weightSum="1">
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textSize="16dp"
+            android:textStyle="bold"/>
 
         <EditText
-            android:layout_width="150px"
+            android:layout_width="110dp"
             android:layout_height="wrap_content"
             android:id="@+id/input_firstname"
             android:layout_marginRight="10px"
             android:inputType="textPersonName"
-            android:hint="First Name"
-            android:layout_weight="0.27" />
+            android:hint="First Name"/>
 
         <EditText
-            android:layout_width="150px"
+            android:layout_width="110dp"
             android:layout_height="wrap_content"
             android:id="@+id/input_lastname"
             android:layout_marginRight="20px"
             android:inputType="textPersonName"
-            android:hint="Last Name"
-            android:layout_weight="0.24" />
+            android:hint="Last Name" />
 
         <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Check"
-            android:id="@+id/button_cardchek"
-            android:layout_weight="0.27" />
-
+            android:id="@+id/button_cardchek" />
     </LinearLayout>
 
     <Button

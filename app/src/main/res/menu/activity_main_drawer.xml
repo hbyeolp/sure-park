@@ -4,19 +4,19 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_rc"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@mipmap/ic_reservation"
             android:title="Current Reservation Confirmation" />
         <item
             android:id="@+id/nav_past_rc"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@mipmap/ic_summary"
             android:title="Reservation Summary" />
         <item
             android:id="@+id/nav_here"
-            android:icon="@drawable/ic_menu_share"
+            android:icon="@mipmap/ic_gate"
             android:title="Open the Gate" />
         <item
             android:id="@+id/nav_handover"
-            android:icon="@drawable/ic_menu_send"
+            android:icon="@mipmap/ic_handover"
             android:title="HandOver" />
     </group>
 </menu>

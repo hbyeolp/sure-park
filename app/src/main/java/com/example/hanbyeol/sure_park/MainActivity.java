@@ -19,8 +19,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.SearchView;
 
@@ -33,6 +35,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -52,12 +55,13 @@ public class MainActivity extends AppCompatActivity
     public static String ioc_id="1", rev_id, status="unreserved", pre_resvid;
     public static String id, parkinglotname, email, entranceTime, exitTime, re_time;
     public static int car_size;
+    int loc_select_state=0;
     String searchParkinglot;
 
     JSONArray sureparks;
     int ct=0;
     String[] loc_ids, loc_names;
-    ArrayAdapter<String> m_Adapter;
+    ListViewParkinglotAdapter m_Adapter;
 
     public static int cardstate=0;
     public static String[] cardmons, cardnums, cardyears, cardcodes, cardnames;
@@ -79,6 +83,9 @@ public class MainActivity extends AppCompatActivity
                 System.out.println("Query"+searchParkinglot);
                 getList = new HttpGetList();
                 getList.execute();
+
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
                 return true;
             }
 
@@ -119,9 +126,9 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         final ListView listview = (ListView)findViewById(R.id.listView);
-        m_Adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1);
+        m_Adapter = new ListViewParkinglotAdapter();
         listview.setAdapter(m_Adapter);
-        m_Adapter.add("example");
+        m_Adapter.addItem("Parkinglot name");
         helperCard = new CardDbOpenHelper(this);
         helperCard.open();
 
@@ -153,9 +160,12 @@ public class MainActivity extends AppCompatActivity
                                                             Intent myIntent = new Intent(MainActivity.this, InputActivity.class);
                                                             startActivity(myIntent);
                                                         }
-                                                        if(hasValues(loc_ids) && hasValues(loc_names)) {
-                                                            MainActivity.ioc_id = loc_ids[listview.getSelectedItemPosition()];
-                                                            MainActivity.parkinglotname = loc_names[listview.getSelectedItemPosition()];
+                                                        if(loc_select_state==1) {
+                                                            if (loc_ids.length != 0 && loc_names.length != 0) {
+                                                                MainActivity.ioc_id = loc_ids[listview.getSelectedItemPosition()];
+                                                                MainActivity.parkinglotname = loc_names[listview.getSelectedItemPosition()];
+                                                                loc_select_state = 0;
+                                                            }
                                                         }
                                                         helperCard.close();
                                                     }
@@ -176,7 +186,7 @@ public class MainActivity extends AppCompatActivity
         checkPermissionPhone();
     }
 
-        private void checkPermissionPhone() {
+    private void checkPermissionPhone() {
         if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE)
                 != PackageManager.PERMISSION_GRANTED) {
             // Should we show an explanation?
@@ -332,8 +342,8 @@ public class MainActivity extends AppCompatActivity
                 InputStream           is   = null;
                 ByteArrayOutputStream baos = null;
                 conn = (HttpURLConnection)url.openConnection();
-                conn.setConnectTimeout(10000);
-                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
                 conn.setRequestMethod("POST");
                 String basicAuth ="Basic " + Base64.encodeToString(("user_driver:123456").getBytes(), Base64.NO_WRAP);
                 conn.setRequestProperty("Authorization", basicAuth);
@@ -407,8 +417,8 @@ public class MainActivity extends AppCompatActivity
                 InputStream           is   = null;
                 ByteArrayOutputStream baos = null;
                 conn = (HttpURLConnection)url.openConnection();
-                conn.setConnectTimeout(10000);
-                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Authorization", token_type+" "+access_token);
                 conn.setRequestProperty("Content-Type", "application/json");
@@ -461,12 +471,14 @@ public class MainActivity extends AppCompatActivity
             super.onPostExecute(s);
             loc_names=new String[ct];
             loc_ids = new String[ct];
+            loc_select_state =1;
+            System.out.println(loc_ids.length);
             for(int i=0;i<ct;i++){
                 try {
                     JSONObject json = sureparks.getJSONObject(i);
                     loc_names[i] = (String) json.get("parkingLotName");
                     loc_ids[i] = (String) json.get("parkingLotID");
-                    m_Adapter.add(parkinglotname+"    ID: "+ loc_ids[i]);
+                    m_Adapter.addItem(loc_names[i]);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -484,8 +496,8 @@ public class MainActivity extends AppCompatActivity
                 InputStream           is   = null;
                 ByteArrayOutputStream baos = null;
                 conn = (HttpURLConnection)url.openConnection();
-                conn.setConnectTimeout(10000);
-                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Authorization", token_type+" "+ access_token);
                 conn.setRequestProperty("Content-Type", "application/json");
@@ -537,17 +549,4 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    boolean hasValues(String... strs) {
-
-        boolean hasValues = true;
-
-        for (String str : strs) {
-
-            if (str == null || str.length() == 0) {
-                hasValues = false;
-                break;
-            }
-        }
-        return hasValues;
-    }
 }

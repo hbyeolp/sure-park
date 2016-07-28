@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="2">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Parking Lot ID:"
+            android:textSize="24dp"
+            android:textColor="#000000"
+            android:gravity="center_vertical"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email:"
+            android:textSize="24dp"
+            android:textColor="#000000"
+            android:gravity="center_vertical"
+            android:layout_weight="1" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Car Size:"
+            android:textSize="24dp"
+            android:textColor="#000000"
+            android:gravity="center_vertical"
+            android:layout_weight="1" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reservation Time:"
+            android:textSize="24dp"
+            android:textColor="#000000"
+            android:gravity="center_vertical"
+            android:layout_weight="1" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Entrance Time:"
+            android:textSize="24dp"
+            android:textColor="#000000"
+            android:gravity="center_vertical"
+            android:layout_weight="1" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Exit Time:"
+            android:textSize="24dp"
+            android:textColor="#000000"
+            android:gravity="center_vertical"
+            android:layout_weight="1" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="4">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/textView_parkinglot_id"
+            android:textSize="16dp"
+            android:textColor="#666666"
+            android:gravity="center_vertical"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/textView_e_mail"
+            android:textSize="16dp"
+            android:gravity="center_vertical"
+            android:textColor="#666666"
+            android:layout_weight="1" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/textView_car_size"
+            android:textSize="16dp"
+            android:gravity="center_vertical"
+            android:textColor="#666666"
+            android:layout_weight="1" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="New Text"
+            android:id="@+id/textView_reservation_time"
+            android:textSize="16dp"
+            android:textColor="#666666"
+            android:layout_weight="1" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="New Text"
+            android:id="@+id/textView_entrance_time"
+            android:textSize="16dp"
+            android:textColor="#666666"
+            android:layout_weight="1" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="New Text"
+            android:id="@+id/textView_exit_time"
+            android:textSize="16dp"
+            android:textColor="#666666"
+            android:layout_weight="1" />
+    </LinearLayout>
+</LinearLayout>

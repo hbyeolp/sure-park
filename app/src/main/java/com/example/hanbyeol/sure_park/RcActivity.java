@@ -90,8 +90,8 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
                 InputStream           is   = null;
                 ByteArrayOutputStream baos = null;
                 conn = (HttpURLConnection)url.openConnection();
-                conn.setConnectTimeout(10000);
-                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Authorization", MainActivity.token_type+" "+MainActivity.access_token);
                 conn.setRequestProperty("Content-Type", "application/json");
@@ -179,8 +179,8 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
                 InputStream           is   = null;
                 ByteArrayOutputStream baos = null;
                 conn = (HttpURLConnection)url.openConnection();
-                conn.setConnectTimeout(10000);
-                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
                 conn.setRequestMethod("DELETE");
                 conn.setRequestProperty("Authorization", MainActivity.token_type+" "+MainActivity.access_token);
                 conn.setRequestProperty("Content-Type", "application/json");
@@ -344,8 +344,8 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
                 InputStream           is   = null;
                 ByteArrayOutputStream baos = null;
                 conn = (HttpURLConnection)url.openConnection();
-                conn.setConnectTimeout(10000);
-                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
                 conn.setRequestMethod("POST");
                 String basicAuth ="Basic " + Base64.encodeToString(("user_driver:123456").getBytes(), Base64.NO_WRAP);
                 conn.setRequestProperty("Authorization", basicAuth);
@@ -412,8 +412,8 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
                 InputStream           is   = null;
                 ByteArrayOutputStream baos = null;
                 conn = (HttpURLConnection)url.openConnection();
-                conn.setConnectTimeout(10000);
-                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Authorization", MainActivity.token_type+" "+ MainActivity.access_token);
                 conn.setRequestProperty("Content-Type", "application/json");

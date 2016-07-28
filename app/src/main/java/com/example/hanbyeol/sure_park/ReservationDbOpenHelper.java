@@ -85,14 +85,14 @@ public class ReservationDbOpenHelper {
         id = Integer.toString(_id);
         return id;
     }
-    void UpdateListView(ArrayAdapter<String> arrayAdapter){
+    void UpdateListView(ListViewReservationAdapter arrayAdapter){
         Cursor c = mDB.query(_TABLENAME, null, null, null, null, null, null);
         if(c.getCount()!=0) {
             c.moveToLast();
-            arrayAdapter.add(" email: " + c.getString(1) + "\n ParkingLotID: " + c.getString(2) + "\n Car Size: " + c.getString(4) + "\n Reservation time: " + c.getString(3) + "\n Entrance Time: " + c.getString(5) + "\n Exit Time: " + c.getString(6));
+            arrayAdapter.addItem(c.getString(1),c.getString(2),c.getString(4),c.getString(3),c.getString(5),c.getString(6));
             System.out.println("array add");
             while (c.moveToPrevious()) {
-                arrayAdapter.add(" email: " + c.getString(1) + "\n ParkingLotID: " + c.getString(2) + "\n Car Size: " + c.getString(4) + "\n Reservation time: " + c.getString(3) + "\n Entrance Time: " + c.getString(5) + "\n Exit Time: " + c.getString(6));
+                arrayAdapter.addItem(c.getString(1),c.getString(2),c.getString(4),c.getString(3),c.getString(5),c.getString(6));
             }
         }
     }
@@ -106,8 +106,8 @@ public class ReservationDbOpenHelper {
         // 키,값의 쌍으로 데이터 입력
         values.put("email", email);
         values.put("parkingLotID", parkingLotID);
-        values.put("reservationTime", reservationTime);
         values.put("carSize", carSize);
+        values.put("reservationTime", reservationTime);
         values.put("entranceTime", entranceTime);
         values.put("exitTime", exitTime);
 

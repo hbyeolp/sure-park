@@ -10,7 +10,7 @@ public class DataBases {
         public static final String _CREATE =
                 "create table card" +
                 "(_id integer primary key autoincrement," +
-                "cardNumber text not null, cardLastname text not null, cardFirstname text not null, cardExpirationMonth text not null, cardExpirationYear text not null, cardValidationCode text not null);";
+                "cardNumber text not null, cardFirstname text not null, cardLastname text not null, cardExpirationMonth text not null, cardExpirationYear text not null, cardValidationCode text not null);";
     }
     public static final class ReservationCreateDB implements BaseColumns {
         public static final String _CREATE =

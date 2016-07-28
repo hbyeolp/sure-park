@@ -14,7 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class RecordCardActivity extends AppCompatActivity {
-    ArrayAdapter m_Adapter;
+    ListViewCardAdapter m_Adapter;
     ListView listview;
 
     private CardDbOpenHelper helperCard;
@@ -30,7 +30,7 @@ public class RecordCardActivity extends AppCompatActivity {
         helperCard.open();
 
         listview = (ListView)findViewById(R.id.listView_record_card);
-        m_Adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1);
+        m_Adapter = new ListViewCardAdapter();
         listview.setAdapter(m_Adapter);
         MainActivity.cardnames=new String[helperCard.Count()];
         MainActivity.cardnums=new String[helperCard.Count()];
