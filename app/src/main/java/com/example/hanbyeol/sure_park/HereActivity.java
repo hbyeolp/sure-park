@@ -141,6 +141,10 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
                                 gateresult="fail";
                                 HttpPostLogin postLogin = new HttpPostLogin();
                                 postLogin.execute();
+                                if(MainActivity.status.equals("reserved"))
+                                    helperReservation.Insert(MainActivity.parkinglotname, MainActivity.email, MainActivity.car_size, MainActivity.re_time,  MainActivity.entranceTime, MainActivity.exitTime);
+                                else if(MainActivity.status.equals("parked"))
+                                    helperReservation.Update(MainActivity.pre_resvid, MainActivity.parkinglotname, MainActivity.email, MainActivity.car_size, MainActivity.re_time,  MainActivity.entranceTime, MainActivity.exitTime);
                                 finish();
                             }
                         });
@@ -434,11 +438,7 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if(MainActivity.status.equals("parked"))
-                helperReservation.Insert(MainActivity.email, MainActivity.parkinglotname, MainActivity.ioc_id, MainActivity.re_time,  MainActivity.entranceTime, MainActivity.exitTime);
-            else if(MainActivity.status.equals("paying"))
-                helperReservation.Update(MainActivity.pre_resvid, MainActivity.email, MainActivity.parkinglotname, MainActivity.ioc_id, MainActivity.re_time,  MainActivity.entranceTime, MainActivity.exitTime);
-            helperReservation.close();
+               helperReservation.close();
         }
     }
 }

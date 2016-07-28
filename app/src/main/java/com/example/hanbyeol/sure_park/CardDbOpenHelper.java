@@ -105,23 +105,27 @@ public class CardDbOpenHelper {
             mDB.insert(_TABLENAME, null, values);
         }
     }
-    void UpdateListView(    ListViewCardAdapter arrayAdapter, String[] cardNumbers, String[] cardHolders, String[] cardExpirationMonths, String[] cardExpirationYears, String[] cardValidationCodes){
+    void UpdateListView(ListViewCardAdapter arrayAdapter, String[] cardNumbers, String[] cardFirstnames, String[] cardLastnames, String[] cardExpirationMonths, String[] cardExpirationYears, String[] cardValidationCodes){
         Cursor c = mDB.query(_TABLENAME, null, null, null, null, null, null);
-        if(c.getCount()!=0) {
+        System.out.println("+++++++++++++++");
+        if(c.getCount()>0) {
             int a=1;
-            cardNumbers[0]=c.getString(1);
-            cardHolders[0]=c.getString(2)+c.getString(3);
+            c.moveToFirst();
+            cardNumbers[0]=c.getString(1).substring(0,4)+c.getString(1).substring(4,8)+c.getString(1).substring(8,12)+c.getString(1).substring(12);
+            cardFirstnames[0]=c.getString(2);
+            cardLastnames[0]=c.getString(3);
             cardExpirationMonths[0]=c.getString(4);
             cardExpirationYears[0]=c.getString(5);
             cardValidationCodes[0]=c.getString(6);
-            arrayAdapter.addItem(cardNumbers[0],cardHolders[0],cardExpirationMonths[0]+"/"+cardExpirationYears[0], cardValidationCodes[0]);
+            arrayAdapter.addItem(cardNumbers[0],cardFirstnames[0]+cardLastnames[0],cardExpirationMonths[0]+"/"+cardExpirationYears[0], cardValidationCodes[0]);
             while (c.moveToNext()) {
                 cardNumbers[a]=c.getString(1);
-                cardHolders[a]=c.getString(2)+c.getString(3);
+                cardFirstnames[a]=c.getString(2);
+                cardLastnames[a]=c.getString(3);
                 cardExpirationMonths[a]=c.getString(4);
                 cardExpirationYears[a]=c.getString(5);
                 cardValidationCodes[a]=c.getString(6);
-                arrayAdapter.addItem(cardNumbers[a],cardHolders[a],cardExpirationMonths[a]+"/"+cardExpirationYears[a], cardValidationCodes[a]);
+                arrayAdapter.addItem(cardNumbers[a],cardFirstnames[a]+cardLastnames[a],cardExpirationMonths[a]+"/"+cardExpirationYears[a], cardValidationCodes[a]);
                 a++;
             }
         }

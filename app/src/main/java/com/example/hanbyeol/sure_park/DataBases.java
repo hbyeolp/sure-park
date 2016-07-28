@@ -16,6 +16,6 @@ public class DataBases {
         public static final String _CREATE =
                 "create table reservation" +
                         "(_id integer primary key autoincrement," +
-                        "email text not null, parkinglotname text not null, parkingLotID text not null, reservationTime text not null, carSize text not null, entranceTime text not null, exitTime text not null);";
+                        "parkinglotname text not null, email text not null, carSize integer not null, reservationTime text not null, entranceTime text not null, exitTime text not null);";
     }
 }

@@ -4,7 +4,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -42,7 +45,16 @@ public class ListViewCardAdapter extends BaseAdapter {
         TextView cardNameView = (TextView) convertView.findViewById(R.id.textView_card_Holder);
         TextView cardDateView = (TextView) convertView.findViewById(R.id.textView_card_Expiration);
         TextView cardCodeView = (TextView) convertView.findViewById(R.id.textView_card_code);
-
+        ImageButton btn_delete = (ImageButton) convertView.findViewById(R.id.button_delete);
+        btn_delete.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                System.out.println("iowjfoiwejfiowejfwe");
+                CardDbOpenHelper cardDbOpenHelper = new CardDbOpenHelper(context);
+                cardDbOpenHelper.open();
+                cardDbOpenHelper.Delete(MainActivity.item);
+                cardDbOpenHelper.close();
+            }
+        });;
         // Data Set(listViewItemList)에서 position에 위치한 데이터 참조 획득
         ListViewCardItem listViewItem = listViewItemList.get(position);
 
@@ -78,4 +90,5 @@ public class ListViewCardAdapter extends BaseAdapter {
 
         listViewItemList.add(item);
     }
+
 }

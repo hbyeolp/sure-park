@@ -1,13 +1,16 @@
 package com.example.hanbyeol.sure_park;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -371,6 +374,8 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             edit_card_cvc.setText(MainActivity.cardcode);
             edit_card_year.setText(MainActivity.cardyear);
             edit_card_mon.setText(MainActivity.cardmon);
+            edit_card_firstname.setText(MainActivity.cardfirstname);
+            edit_card_lastname.setText(MainActivity.cardlastname);
             SetFalseClick();
             MainActivity.cardstate=0;
         }
@@ -709,7 +714,9 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                                 postLogin.execute();
                                 HttpGetParkinglot getParkinglot = new HttpGetParkinglot();
                                 getParkinglot.execute();
-                                helperCard.Insert(MainActivity.cardnum, edit_card_firstname.getText().toString(),edit_card_lastname.getText().toString(), MainActivity.cardmon, MainActivity.cardyear, MainActivity.cardcode);
+                                String firstname= edit_card_firstname.getText().toString();
+                                String lastname = edit_card_lastname.getText().toString();
+                                helperCard.Insert(MainActivity.cardnum, firstname,lastname, MainActivity.cardmon, MainActivity.cardyear, MainActivity.cardcode);
                                 helperCard.close();
                                 available_card=0;
                                 finish();
@@ -732,7 +739,6 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             }
         }
     }
-
     public class HttpPostLogin extends AsyncTask<String, Void, String> {
         @Override
         public String doInBackground(String... params) {
@@ -753,7 +759,10 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                 conn.setDoOutput(true);
                 conn.setDoInput(true);
 
-
+                TelephonyManager telManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+                MainActivity.phoneNum = telManager.getLine1Number();
+                MainActivity.phoneNum=MainActivity.phoneNum.replace("+","");
+                System.out.println(MainActivity.phoneNum);
                 JSONObject json = new JSONObject();
                 json.put("phoneNumber", MainActivity.phoneNum);
                 json.put("secretKey", MainActivity.secret_k);
@@ -780,12 +789,86 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                     byteData = baos.toByteArray();
 
                     response = new String(byteData);
+                    System.out.println(response);
 
                     JSONObject responseJSON = new JSONObject(response);
                     String user_status = (String) responseJSON.get("driverRegistration");
                     MainActivity.phoneNum = (String) responseJSON.get("phoneNumber");
                     MainActivity.id = (String) responseJSON.get("identificationNumber");
-                    MainActivity.status = (String) responseJSON.get("state");
+                }
+
+            } catch (Exception e) {
+                System.out.println("error");
+                e.printStackTrace();
+            }
+
+            return null;
+
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            HttpPostOauth postOauth = new HttpPostOauth();
+            postOauth.execute();
+        }
+    }
+    public class HttpPostOauth extends AsyncTask<String, Void, String> {
+        @Override
+        public String doInBackground(String... params) {
+            try {
+                URL url = new URL(MainActivity.address+"oauth/token");
+                HttpURLConnection   conn    = null;
+                OutputStream          os   = null;
+                InputStream           is   = null;
+                ByteArrayOutputStream baos = null;
+                conn = (HttpURLConnection)url.openConnection();
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
+                conn.setRequestMethod("POST");
+                String basicAuth ="Basic " + Base64.encodeToString(("user_driver:123456").getBytes(), Base64.NO_WRAP);
+                conn.setRequestProperty("Authorization", basicAuth);
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
+                conn.setDoInput(true);
+
+                String req_token= "password="+MainActivity.id+"&username="+MainActivity.phoneNum+"&grant_type=password&scope=read%20write&client_secret=123456&client_id=user_driver";
+
+                os = conn.getOutputStream();
+                os.write(req_token.getBytes());
+                os.flush();
+                os.close();
+
+                String response;
+
+                int responseCode = conn.getResponseCode();
+                System.out.println("oauth token" + responseCode);
+                if(responseCode == HttpURLConnection.HTTP_OK) {
+
+                    is = conn.getInputStream();
+                    baos = new ByteArrayOutputStream();
+                    byte[] byteBuffer = new byte[1024];
+                    byte[] byteData = null;
+                    int nLength = 0;
+                    while((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
+                        baos.write(byteBuffer, 0, nLength);
+                    }
+                    byteData = baos.toByteArray();
+
+                    response = new String(byteData);
+
+                    JSONObject responseJSON = new JSONObject(response);
+
+                    MainActivity.access_token = (String) responseJSON.get("access_token");
+                    MainActivity.token_type = (String) responseJSON.get("token_type");
+                    String refresh_token = (String) responseJSON.get("refresh_token");
+                    int expires_in = (int) responseJSON.get("expires_in");
+                    String scope = (String) responseJSON.get("scope");
+
+                } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
+                    System.out.println("FOBIDDEN");
+                } else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){
+                    System.out.println("UNAUTHORIZED");
                 }
 
             } catch (Exception e) {
@@ -826,6 +909,8 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                 String response;
 
                 int responseCode = conn.getResponseCode();
+                System.out.println("getstate"+ responseCode);
+
                 if(responseCode == HttpURLConnection.HTTP_OK) {
 
                     is = conn.getInputStream();
@@ -845,7 +930,8 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                     MainActivity.rev_id = (String) responseJSON.get("reservationID");
                     MainActivity.phoneNum = (String) responseJSON.get("phoneNumber");
                     MainActivity.status = (String) responseJSON.get("state");
-
+                    System.out.println(MainActivity.status);
+                    System.out.println("rev_id"+MainActivity.rev_id);
                 } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
                     System.out.println("FOBIDDEN");
                 } else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){

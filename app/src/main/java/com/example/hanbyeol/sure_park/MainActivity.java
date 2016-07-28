@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity
     public static String secret_k="surepark";
     public static String address = "http://192.168.1.80:8080/surepark-restful/";
     private static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 1;
-
+    public static int item=0;
     public static String phoneNum;
     public static String access_token, token_type;
     public static String ioc_id="1", rev_id, status="unreserved", pre_resvid;
@@ -64,8 +64,8 @@ public class MainActivity extends AppCompatActivity
     ListViewParkinglotAdapter m_Adapter;
 
     public static int cardstate=0;
-    public static String[] cardmons, cardnums, cardyears, cardcodes, cardnames;
-    public static String cardmon, cardnum, cardyear, cardcode, cardname;
+    public static String[] cardmons, cardnums, cardyears, cardcodes, cardlastnames, cardfirstnames;
+    public static String cardmon, cardnum, cardyear, cardcode, cardlastname, cardfirstname, cardname;
     private CardDbOpenHelper helperCard;
 
     @Override
@@ -131,11 +131,11 @@ public class MainActivity extends AppCompatActivity
         m_Adapter.addItem("Parkinglot name");
         helperCard = new CardDbOpenHelper(this);
         helperCard.open();
-
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                                     if(status.equals("unreserved")) {
                                                         if(helperCard.Count()>0) {
+                                                            System.out.println("helpercard"+helperCard.Count());
                                                             AlertDialog.Builder alert_confirm = new AlertDialog.Builder(MainActivity.this);
                                                             alert_confirm.setMessage("Would you like to use the stored card?").setCancelable(false).setPositiveButton("No",
                                                                     new DialogInterface.OnClickListener() {
@@ -148,6 +148,7 @@ public class MainActivity extends AppCompatActivity
                                                                     new DialogInterface.OnClickListener() {
                                                                         @Override
                                                                         public void onClick(DialogInterface dialog, int which) {
+                                                                            helperCard.close();
                                                                             Intent myIntent = new Intent(MainActivity.this, RecordCardActivity.class);
                                                                             startActivity(myIntent);
                                                                             return;
@@ -162,12 +163,11 @@ public class MainActivity extends AppCompatActivity
                                                         }
                                                         if(loc_select_state==1) {
                                                             if (loc_ids.length != 0 && loc_names.length != 0) {
-                                                                MainActivity.ioc_id = loc_ids[listview.getSelectedItemPosition()];
-                                                                MainActivity.parkinglotname = loc_names[listview.getSelectedItemPosition()];
+                                                                MainActivity.ioc_id = loc_ids[position];
+                                                                MainActivity.parkinglotname = loc_names[position];
                                                                 loc_select_state = 0;
                                                             }
                                                         }
-                                                        helperCard.close();
                                                     }
                                                     else {
                                                         AlertDialog.Builder alert_confirm = new AlertDialog.Builder(MainActivity.this);
@@ -181,6 +181,7 @@ public class MainActivity extends AppCompatActivity
                                                         AlertDialog alert = alert_confirm.create();
                                                         alert.show();
                                                     }
+                                                    helperCard.close();
                                                 }
                                             });
         checkPermissionPhone();
@@ -282,7 +283,8 @@ public class MainActivity extends AppCompatActivity
 
                 TelephonyManager telManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
                 phoneNum = telManager.getLine1Number();
-
+                phoneNum=phoneNum.replace("+","");
+                System.out.println(phoneNum);
                 JSONObject json = new JSONObject();
                 json.put("phoneNumber", phoneNum);
                 json.put("secretKey", secret_k);
@@ -362,7 +364,7 @@ public class MainActivity extends AppCompatActivity
                 String response;
 
                 int responseCode = conn.getResponseCode();
-
+                System.out.println("oauth token" + responseCode);
                 if(responseCode == HttpURLConnection.HTTP_OK) {
 
                     is = conn.getInputStream();
@@ -411,7 +413,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public String doInBackground(String... params) {
             try {
-                URL url = new URL(address+"sureparks/list/"+parkinglotname);
+                URL url = new URL(address+"sureparks/list/"+searchParkinglot);
                 HttpURLConnection   conn    = null;
                 OutputStream          os   = null;
                 InputStream           is   = null;
@@ -430,6 +432,7 @@ public class MainActivity extends AppCompatActivity
 
                 int responseCode = conn.getResponseCode();
                 System.out.println("========================="+responseCode);
+                System.out.println("getlist"+ responseCode);
 
                 if(responseCode == HttpURLConnection.HTTP_OK) {
 
@@ -446,9 +449,9 @@ public class MainActivity extends AppCompatActivity
                     response = new String(byteData);
 
                     JSONObject responseJSON = new JSONObject(response);
+                    System.out.println(response);
                     sureparks = responseJSON.getJSONArray("sureparks");
-                    String count = (String) responseJSON.get("count");
-                    ct = Integer.parseInt(count);
+                    ct = (int) responseJSON.get("count");
                     System.out.println(response);
 
                 } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
@@ -508,6 +511,8 @@ public class MainActivity extends AppCompatActivity
                 String response;
 
                 int responseCode = conn.getResponseCode();
+                System.out.println("getstate"+ responseCode);
+
                 if(responseCode == HttpURLConnection.HTTP_OK) {
 
                     is = conn.getInputStream();

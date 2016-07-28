@@ -13,7 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class RecordCardActivity extends AppCompatActivity {
+public class RecordCardActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     ListViewCardAdapter m_Adapter;
     ListView listview;
 
@@ -32,27 +32,14 @@ public class RecordCardActivity extends AppCompatActivity {
         listview = (ListView)findViewById(R.id.listView_record_card);
         m_Adapter = new ListViewCardAdapter();
         listview.setAdapter(m_Adapter);
-        MainActivity.cardnames=new String[helperCard.Count()];
+        MainActivity.cardfirstnames=new String[helperCard.Count()];
+        MainActivity.cardlastnames=new String[helperCard.Count()];
         MainActivity.cardnums=new String[helperCard.Count()];
         MainActivity.cardmons=new String[helperCard.Count()];
         MainActivity.cardyears=new String[helperCard.Count()];
         MainActivity.cardcodes=new String[helperCard.Count()];
-
-        helperCard.UpdateListView(m_Adapter,MainActivity.cardnums, MainActivity.cardnames, MainActivity.cardmons, MainActivity.cardyears, MainActivity.cardcodes);
-
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MainActivity.cardname=MainActivity.cardnames[listview.getSelectedItemPosition()];
-                MainActivity.cardnum=MainActivity.cardnums[listview.getSelectedItemPosition()];
-                MainActivity.cardmon=MainActivity.cardmons[listview.getSelectedItemPosition()];
-                MainActivity.cardyear=MainActivity.cardyears[listview.getSelectedItemPosition()];
-                MainActivity.cardcode=MainActivity.cardcodes[listview.getSelectedItemPosition()];
-                MainActivity.cardstate=1;
-                Intent intent =  new Intent(RecordCardActivity.this, InputActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+        helperCard.UpdateListView(m_Adapter,MainActivity.cardnums, MainActivity.cardfirstnames, MainActivity.cardlastnames, MainActivity.cardmons, MainActivity.cardyears, MainActivity.cardcodes);
+        listview.setOnItemClickListener(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -61,5 +48,24 @@ public class RecordCardActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         helperCard.close();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Intent intent =  new Intent(RecordCardActivity.this, InputActivity.class);
+        startActivity(intent);
+        System.out.println(listview.getSelectedItemPosition());
+        MainActivity.item=i;
+        MainActivity.cardfirstname=MainActivity.cardfirstnames[i];
+        MainActivity.cardlastname = MainActivity.cardlastnames[i];
+        MainActivity.cardnum=MainActivity.cardnums[i];
+        MainActivity.cardmon=MainActivity.cardmons[i];
+        MainActivity.cardyear=MainActivity.cardyears[i];
+        MainActivity.cardcode=MainActivity.cardcodes[i];
+        MainActivity.cardstate=1;
+        System.out.println("getselectposition"+listview.getSelectedItemPosition());
+        System.out.println("cardstate " + MainActivity.cardstate);
+
+        finish();
     }
 }

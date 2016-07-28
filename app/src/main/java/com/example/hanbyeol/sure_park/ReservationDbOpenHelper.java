@@ -63,12 +63,12 @@ public class ReservationDbOpenHelper {
         int result = mDB.delete(_TABLENAME, "cardNumber=?", new String[] {cardNumber});
     }
 
-    void Update (String id, String email, String parkingLotID, String reservationTime, String carSize, String entranceTime, String exitTime) {
+    void Update (String id, String parkingLotName, String email, int carSize, String reservationTime, String entranceTime, String exitTime) {
         ContentValues values = new ContentValues();
+        values.put("parkingLotName", parkingLotName);
         values.put("email", email);
-        values.put("parkingLotID", parkingLotID);
-        values.put("reservationTime", reservationTime);
         values.put("carSize", carSize);
+        values.put("reservationTime", reservationTime);
         values.put("entranceTime", entranceTime);
         values.put("exitTime", exitTime);
         int result = mDB.update(_TABLENAME,
@@ -88,11 +88,23 @@ public class ReservationDbOpenHelper {
     void UpdateListView(ListViewReservationAdapter arrayAdapter){
         Cursor c = mDB.query(_TABLENAME, null, null, null, null, null, null);
         if(c.getCount()!=0) {
+            String carsize="";
             c.moveToLast();
-            arrayAdapter.addItem(c.getString(1),c.getString(2),c.getString(4),c.getString(3),c.getString(5),c.getString(6));
+            switch (c.getInt(3)){
+                case 1:
+                    carsize="Small";
+                    break;
+                case 2:
+                    carsize="Mid-size";
+                    break;
+                case 3:
+                    carsize="Full-size";
+                    break;
+            }
+            arrayAdapter.addItem(c.getString(1),c.getString(2),carsize,c.getString(4),c.getString(5),c.getString(6));
             System.out.println("array add");
             while (c.moveToPrevious()) {
-                arrayAdapter.addItem(c.getString(1),c.getString(2),c.getString(4),c.getString(3),c.getString(5),c.getString(6));
+                arrayAdapter.addItem(c.getString(1),c.getString(2),c.getString(3),c.getString(4),c.getString(5),c.getString(6));
             }
         }
     }
@@ -101,11 +113,11 @@ public class ReservationDbOpenHelper {
         return c.getCount();
     }
 
-    long Insert (String email, String parkingLotID, String reservationTime, String carSize, String entranceTime, String exitTime) {
+    long Insert (String parkingLotName, String email, int carSize, String reservationTime, String entranceTime, String exitTime) {
         ContentValues values = new ContentValues();
         // 키,값의 쌍으로 데이터 입력
+        values.put("parkingLotName", parkingLotName);
         values.put("email", email);
-        values.put("parkingLotID", parkingLotID);
         values.put("carSize", carSize);
         values.put("reservationTime", reservationTime);
         values.put("entranceTime", entranceTime);

@@ -75,10 +75,10 @@ public class ListViewReservationAdapter extends BaseAdapter {
     }
 
     // 아이템 데이터 추가를 위한 함수. 개발자가 원하는대로 작성 가능.
-    public void addItem(String parkinglotID, String email, String carSize, String reservationTime, String entranceTime, String exitTime) {
+    public void addItem(String parkinglotname, String email, String carSize, String reservationTime, String entranceTime, String exitTime) {
         ListViewReservationItem item = new ListViewReservationItem();
 
-        item.setParkinglotID(parkinglotID);
+        item.setParkinglotID(parkinglotname);
         item.setEmail(email);
         item.setCarSize(carSize);
         item.setReservationTime(reservationTime);

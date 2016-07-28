@@ -71,4 +71,8 @@ public class ListViewParkinglotAdapter extends BaseAdapter {
 
         listViewItemList.add(item);
     }
+    public void removeItem(String title){
+        ListViewParkinglotItem item = new ListViewParkinglotItem();
+        //listViewItemList.remove()
+    }
 }

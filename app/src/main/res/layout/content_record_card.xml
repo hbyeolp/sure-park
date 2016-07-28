@@ -17,7 +17,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/listView_record_card"
         android:overScrollMode="ifContentScrolls"
-        android:background="@color/colorPrimary"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
 </RelativeLayout>

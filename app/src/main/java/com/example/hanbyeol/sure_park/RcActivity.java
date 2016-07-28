@@ -269,9 +269,9 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
             }
         }
     }
-    public class HttpPostLogin extends AsyncTask<String, Void, Void> {
+    public class HttpPostLogin extends AsyncTask<String, Void, String> {
         @Override
-        public Void doInBackground(String... params) {
+        public String doInBackground(String... params) {
             try {
                 URL url = new URL(MainActivity.address+"drivers");
                 HttpURLConnection   conn    = null;
@@ -289,7 +289,10 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
                 conn.setDoOutput(true);
                 conn.setDoInput(true);
 
-
+                TelephonyManager telManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+                MainActivity.phoneNum = telManager.getLine1Number();
+                MainActivity.phoneNum=MainActivity.phoneNum.replace("+","");
+                System.out.println(MainActivity.phoneNum);
                 JSONObject json = new JSONObject();
                 json.put("phoneNumber", MainActivity.phoneNum);
                 json.put("secretKey", MainActivity.secret_k);
@@ -316,12 +319,12 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
                     byteData = baos.toByteArray();
 
                     response = new String(byteData);
+                    System.out.println(response);
 
                     JSONObject responseJSON = new JSONObject(response);
                     String user_status = (String) responseJSON.get("driverRegistration");
                     MainActivity.phoneNum = (String) responseJSON.get("phoneNumber");
                     MainActivity.id = (String) responseJSON.get("identificationNumber");
-                    MainActivity.status = (String) responseJSON.get("state");
                 }
 
             } catch (Exception e) {
@@ -332,11 +335,16 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
             return null;
 
         }
-    }
-
-    public class HttpPostOauth extends AsyncTask<String, Void, Void> {
         @Override
-        public Void doInBackground(String... params) {
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            HttpPostOauth postOauth = new HttpPostOauth();
+            postOauth.execute();
+        }
+    }
+    public class HttpPostOauth extends AsyncTask<String, Void, String> {
+        @Override
+        public String doInBackground(String... params) {
             try {
                 URL url = new URL(MainActivity.address+"oauth/token");
                 HttpURLConnection   conn    = null;
@@ -364,7 +372,7 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
                 String response;
 
                 int responseCode = conn.getResponseCode();
-
+                System.out.println("oauth token" + responseCode);
                 if(responseCode == HttpURLConnection.HTTP_OK) {
 
                     is = conn.getInputStream();
@@ -401,7 +409,14 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
             return null;
 
         }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            HttpGetState getState = new HttpGetState();
+            getState.execute();
+        }
     }
+
     public class HttpGetState extends AsyncTask<String, Void, String> {
         @Override
         public String doInBackground(String... params) {
@@ -424,6 +439,8 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
                 String response;
 
                 int responseCode = conn.getResponseCode();
+                System.out.println("getstate"+ responseCode);
+
                 if(responseCode == HttpURLConnection.HTTP_OK) {
 
                     is = conn.getInputStream();
@@ -443,7 +460,8 @@ public class RcActivity extends AppCompatActivity implements View.OnClickListene
                     MainActivity.rev_id = (String) responseJSON.get("reservationID");
                     MainActivity.phoneNum = (String) responseJSON.get("phoneNumber");
                     MainActivity.status = (String) responseJSON.get("state");
-
+                    System.out.println(MainActivity.status);
+                    System.out.println("rev_id"+MainActivity.rev_id);
                 } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
                     System.out.println("FOBIDDEN");
                 } else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){

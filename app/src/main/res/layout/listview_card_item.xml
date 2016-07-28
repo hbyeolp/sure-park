@@ -1,53 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:id="@+id/imageView1"
         android:src="@mipmap/ic_card"
+        android:focusableInTouchMode="false"
+        android:clickable="false"
+        android:focusable="false"
         android:layout_weight="1" />
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="4">
+        android:layout_height="match_parent">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Card Number:"
-            android:textSize="24dp"
+            android:textSize="10dp"
             android:textColor="#000000"
             android:gravity="center_vertical"
+            android:focusableInTouchMode="false"
+            android:clickable="false"
+            android:focusable="false"
             android:layout_weight="1" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Card Holder:"
-            android:textSize="24dp"
+            android:textSize="10dp"
             android:textColor="#000000"
             android:gravity="center_vertical"
+            android:focusableInTouchMode="false"
+            android:clickable="false"
+            android:focusable="false"
             android:layout_weight="1" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Card Expiration:"
-            android:textSize="24dp"
+            android:textSize="10dp"
             android:textColor="#000000"
             android:gravity="center_vertical"
+            android:focusableInTouchMode="false"
+            android:clickable="false"
+            android:focusable="false"
             android:layout_weight="1" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="CVC:"
-            android:textSize="24dp"
+            android:textSize="10dp"
             android:textColor="#000000"
             android:gravity="center_vertical"
+            android:focusableInTouchMode="false"
+            android:clickable="false"
+            android:focusable="false"
             android:layout_weight="1" />
     </LinearLayout>
     <LinearLayout
@@ -61,9 +76,12 @@
             android:layout_height="wrap_content"
             android:text="New Text"
             android:id="@+id/textView_card_number"
-            android:textSize="16dp"
+            android:textSize="8dp"
             android:textColor="#666666"
             android:gravity="center_vertical"
+            android:focusableInTouchMode="false"
+            android:clickable="false"
+            android:focusable="false"
             android:layout_weight="1" />
 
         <TextView
@@ -71,18 +89,24 @@
             android:layout_height="wrap_content"
             android:text="New Text"
             android:id="@+id/textView_card_Holder"
-            android:textSize="16dp"
+            android:textSize="8dp"
             android:gravity="center_vertical"
             android:textColor="#666666"
+            android:focusableInTouchMode="false"
+            android:clickable="false"
+            android:focusable="false"
             android:layout_weight="1" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="New Text"
             android:id="@+id/textView_card_Expiration"
-            android:textSize="16dp"
+            android:textSize="8dp"
             android:gravity="center_vertical"
             android:textColor="#666666"
+            android:focusableInTouchMode="false"
+            android:clickable="false"
+            android:focusable="false"
             android:layout_weight="1" />
         <TextView
             android:layout_width="match_parent"
@@ -90,13 +114,21 @@
             android:gravity="center_vertical"
             android:text="New Text"
             android:id="@+id/textView_card_code"
-            android:textSize="16dp"
+            android:textSize="8dp"
             android:textColor="#666666"
+            android:focusableInTouchMode="false"
+            android:clickable="false"
+            android:focusable="false"
             android:layout_weight="1" />
     </LinearLayout>
     <ImageButton
-        android:id="@+id/button1"
+        android:id="@+id/button_delete"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:src="@mipmap/ic_delete"
+        android:focusableInTouchMode="false"
+        android:clickable="false"
+        android:focusable="false"
         android:layout_weight="1" />
 </LinearLayout>
