@@ -13,7 +13,7 @@ import android.widget.ListView;
 public class PastRcActivity extends AppCompatActivity {
     ListViewReservationAdapter m_Adapter;
     ListView listview;
-    ReservationDbOpenHelper helperReservation;
+    private ReservationDbOpenHelper helperReservation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,12 +28,7 @@ public class PastRcActivity extends AppCompatActivity {
         m_Adapter = new ListViewReservationAdapter();
         listview.setAdapter(m_Adapter);
         helperReservation.UpdateListView(m_Adapter);
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-        });
-
+        m_Adapter.notifyDataSetChanged();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
     @Override

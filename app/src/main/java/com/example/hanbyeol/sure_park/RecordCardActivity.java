@@ -3,6 +3,7 @@ package com.example.hanbyeol.sure_park;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -11,12 +12,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
-public class RecordCardActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class RecordCardActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
     ListViewCardAdapter m_Adapter;
     ListView listview;
-
+    boolean del_boolean=false;
     private CardDbOpenHelper helperCard;
 
     @Override
@@ -39,8 +42,8 @@ public class RecordCardActivity extends AppCompatActivity implements AdapterView
         MainActivity.cardyears=new String[helperCard.Count()];
         MainActivity.cardcodes=new String[helperCard.Count()];
         helperCard.UpdateListView(m_Adapter,MainActivity.cardnums, MainActivity.cardfirstnames, MainActivity.cardlastnames, MainActivity.cardmons, MainActivity.cardyears, MainActivity.cardcodes);
-        listview.setOnItemClickListener(this);
 
+        listview.setOnItemClickListener(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
@@ -65,7 +68,43 @@ public class RecordCardActivity extends AppCompatActivity implements AdapterView
         MainActivity.cardstate=1;
         System.out.println("getselectposition"+listview.getSelectedItemPosition());
         System.out.println("cardstate " + MainActivity.cardstate);
-
+        helperCard.close();
         finish();
+    }
+    @Override
+    public void onClick(final View v) {
+        System.out.println("delete button click");
+        AlertDialog.Builder alert_confirm = new AlertDialog.Builder(RecordCardActivity.this);
+        alert_confirm.setMessage("Would you like to delete the stored card information?").setCancelable(false).setPositiveButton("No",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).setNegativeButton("Yes",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        System.out.println("item " + (int)v.getTag());
+                        helperCard.Delete(MainActivity.cardnums[(int)v.getTag()]);
+                        m_Adapter.removeItem((int)v.getTag());
+                        m_Adapter.notifyDataSetChanged();
+                        del_boolean=true;
+                    }
+                });
+        AlertDialog alert = alert_confirm.create();
+        alert.show();
+        if(del_boolean){
+            AlertDialog.Builder alert_confirm1 = new AlertDialog.Builder(RecordCardActivity.this);
+            alert_confirm.setMessage("Delete Complete").setCancelable(false).setPositiveButton("Confirm",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            del_boolean=false;
+                        }
+                    });
+            AlertDialog alert1 = alert_confirm1.create();
+            alert1.show();
+        }
     }
 }

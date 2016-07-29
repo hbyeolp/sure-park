@@ -19,7 +19,6 @@ public class ReservationDbOpenHelper {
     public static SQLiteDatabase mDB;
     private DatabaseHelper mDBHelper;
     private Context mCtx;
-
     private class DatabaseHelper extends SQLiteOpenHelper {
 
         public DatabaseHelper(Context context, String name,
@@ -71,23 +70,24 @@ public class ReservationDbOpenHelper {
         int result = mDB.update(_TABLENAME,
                 values,
                 "_id=?",
-                new String[]{SelectID(id)});// 諛붽? ??ぉ?쇰줈 李얠쓣 媛?String 諛곗뿴
+                new String[]{SelectID(id)});
     }
     String SelectID(String id){
         Cursor c = mDB.query(_TABLENAME, null, null, null, null, null, null);
         int _id=0;
         if(c.moveToLast()) {
-            _id = c.getInt(0);
+            _id = c.getInt(c.getColumnIndex("_id"));
+            id = Integer.toString(_id);
         }
-        id = Integer.toString(_id);
         return id;
     }
     void UpdateListView(ListViewReservationAdapter arrayAdapter){
         Cursor c = mDB.query(_TABLENAME, null, null, null, null, null, null);
+        System.out.println("Update List");
         if(c.getCount()!=0) {
-            String carsize="";
+            String carsize="abc";
             c.moveToLast();
-            switch (c.getInt(3)){
+            switch (c.getInt(c.getColumnIndex("carSize"))){
                 case 1:
                     carsize="Small";
                     break;
@@ -98,10 +98,13 @@ public class ReservationDbOpenHelper {
                     carsize="Full-size";
                     break;
             }
+            System.out.println(carsize);
             arrayAdapter.addItem(c.getString(1),c.getString(2),carsize,c.getString(4),c.getString(5),c.getString(6));
+            arrayAdapter.notifyDataSetChanged();
             System.out.println("array add");
             while (c.moveToPrevious()) {
-                arrayAdapter.addItem(c.getString(1),c.getString(2),c.getString(3),c.getString(4),c.getString(5),c.getString(6));
+                arrayAdapter.addItem(c.getString(1),c.getString(2),carsize,c.getString(4),c.getString(5),c.getString(6));
+                arrayAdapter.notifyDataSetChanged();
             }
         }
     }

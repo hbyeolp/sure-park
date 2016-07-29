@@ -112,6 +112,8 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
 
                     JSONObject responseJSON = new JSONObject(response);
                     gateresult = (String) responseJSON.get("result");
+                    if(MainActivity.status.equals("parked"))
+                        MainActivity.exitTime = (String) responseJSON.get("exitTime");
 
                 } else if (responseCode == HttpURLConnection.HTTP_FORBIDDEN) {
                     System.out.println("FOBIDDEN");
@@ -141,6 +143,13 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
                             public void onClick(DialogInterface dialog, int which) {
                                 // 'YES'
                                 gateresult = "fail";
+                                System.out.println("Here entrancetime: " + MainActivity.entranceTime);
+                                System.out.println("Here exittime : "+MainActivity.exitTime);
+                                if(MainActivity.exitTime!=null) {
+                                    if (!MainActivity.exitTime.equals("null"))
+                                        System.out.println("Here insert");
+                                        helperReservation.Insert(MainActivity.parkinglotname, MainActivity.email, MainActivity.car_size, MainActivity.re_time, MainActivity.entranceTime, MainActivity.exitTime);
+                                }
                                 HttpPostLogin postLogin = new HttpPostLogin();
                                 postLogin.execute();
                                 finish();
@@ -371,6 +380,7 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
             super.onPostExecute(s);
             HttpGetInfo getInfo = new HttpGetInfo();
             getInfo.execute();
+
         }
     }
 
@@ -438,13 +448,7 @@ public class HereActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            System.out.println("Here status : "+MainActivity.status);
-            if (MainActivity.status.equals("parked"))
-                helperReservation.Insert(MainActivity.parkinglotname, MainActivity.email, MainActivity.car_size, MainActivity.re_time, MainActivity.entranceTime, MainActivity.exitTime);
-            else
-                helperReservation.Update(MainActivity.pre_resvid, MainActivity.parkinglotname, MainActivity.email, MainActivity.car_size, MainActivity.re_time, MainActivity.entranceTime, MainActivity.exitTime);
-            System.out.println("helper Reservation");
-            helperReservation.close();
+           helperReservation.close();
         }
     }
 }

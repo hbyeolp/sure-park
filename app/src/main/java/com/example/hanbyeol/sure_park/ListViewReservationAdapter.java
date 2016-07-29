@@ -36,7 +36,7 @@ public class ListViewReservationAdapter extends BaseAdapter {
 
         TextView parkinglotidTextView = (TextView) convertView.findViewById(R.id.textView_parkinglot_id) ;
         TextView emailTextView = (TextView) convertView.findViewById(R.id.textView_e_mail) ;
-        TextView carsizeTextView = (TextView) convertView.findViewById(R.id.textview_carsize) ;
+        TextView carsizeTextView = (TextView) convertView.findViewById(R.id.textView_car_size) ;
         TextView reservationtimeTextView = (TextView) convertView.findViewById(R.id.textView_reservation_time) ;
         TextView entrancetimeTextView = (TextView) convertView.findViewById(R.id.textView_entrance_time) ;
         TextView exittimeTextView = (TextView) convertView.findViewById(R.id.textView_exit_time) ;
@@ -66,7 +66,6 @@ public class ListViewReservationAdapter extends BaseAdapter {
 
     public void addItem(String parkinglotname, String email, String carSize, String reservationTime, String entranceTime, String exitTime) {
         ListViewReservationItem item = new ListViewReservationItem();
-
         item.setParkinglotID(parkinglotname);
         item.setEmail(email);
         item.setCarSize(carSize);

@@ -22,7 +22,7 @@ public class ListViewCardAdapter extends BaseAdapter {
 
     CardDbOpenHelper cardDbOpenHelper;
     boolean del_boolean=false;
-    private ArrayList<ListViewCardItem> listViewItemList = new ArrayList<ListViewCardItem>() ;
+    public ArrayList<ListViewCardItem> listViewItemList = new ArrayList<ListViewCardItem>() ;
 
     public ListViewCardAdapter() {
 
@@ -48,45 +48,8 @@ public class ListViewCardAdapter extends BaseAdapter {
         TextView cardCodeView = (TextView) convertView.findViewById(R.id.textView_card_code);
         ImageButton btn_delete = (ImageButton) convertView.findViewById(R.id.button_delete);
         btn_delete.setTag(position);
-        btn_delete.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(final View v) {
-                System.out.println("delete button click");
-                cardDbOpenHelper = new CardDbOpenHelper(context);
-                cardDbOpenHelper.open();
-                AlertDialog.Builder alert_confirm = new AlertDialog.Builder(context);
-                alert_confirm.setMessage("Would you like to delete the stored card information?").setCancelable(false).setPositiveButton("No",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+        btn_delete.setOnClickListener((View.OnClickListener)context);
 
-                            }
-                        }).setNegativeButton("Yes",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                System.out.println("item " + ((int)v.getTag()+1));
-                                cardDbOpenHelper.Delete((int)v.getTag()+1);
-                                listViewItemList.remove((int)v.getTag()+1);
-                                del_boolean=true;
-                            }
-                        });
-                AlertDialog alert = alert_confirm.create();
-                alert.show();
-                if(del_boolean){
-                    AlertDialog.Builder alert_confirm1 = new AlertDialog.Builder(context);
-                    alert_confirm.setMessage("Delete Complete").setCancelable(false).setPositiveButton("Confirm",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    del_boolean=false;
-                                }
-                            });
-                    AlertDialog alert1 = alert_confirm1.create();
-                    alert1.show();
-                }
-                cardDbOpenHelper.close();
-            }
-        });;
         ListViewCardItem listViewItem = listViewItemList.get(position);
 
         cardNumView.setText(listViewItem.getCardnum());
@@ -117,5 +80,9 @@ public class ListViewCardAdapter extends BaseAdapter {
         item.setCardcode(cvc);
 
         listViewItemList.add(item);
+    }
+    public void removeItem(int num) {
+
+        listViewItemList.remove(num);
     }
 }

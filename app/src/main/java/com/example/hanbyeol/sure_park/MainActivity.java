@@ -25,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -109,15 +110,19 @@ public class MainActivity extends AppCompatActivity
         final ListView listview = (ListView)findViewById(R.id.listView);
         m_Adapter = new ListViewParkinglotAdapter();
         listview.setAdapter(m_Adapter);
-        m_Adapter.addItem("Parkinglot name");
-        m_Adapter.removeItem(1);
+        //m_Adapter.addItem("Parkinglot name");
+        //m_Adapter.removeItem(1);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
 
                 searchParkinglot = searchView.getQuery().toString();
                 System.out.println("Query"+searchParkinglot);
-                m_Adapter.removeItem(loc_names.length);
+                System.out.println("parkinglot "+ loc_names.length);
+                if(loc_names.length!=0) {
+                    m_Adapter.removeItem(loc_names.length);
+                    m_Adapter.notifyDataSetChanged();
+                }
                 getList = new HttpGetList();
                 getList.execute();
                 searchView.clearFocus();
@@ -414,6 +419,11 @@ public class MainActivity extends AppCompatActivity
 
     public class HttpGetList extends AsyncTask<String, Void, String> {
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            ct=0;
+        }
+        @Override
         public String doInBackground(String... params) {
             try {
                 URL url = new URL(address+"sureparks/list/"+searchParkinglot);
@@ -450,7 +460,6 @@ public class MainActivity extends AppCompatActivity
                     byteData = baos.toByteArray();
 
                     response = new String(byteData);
-
                     JSONObject responseJSON = new JSONObject(response);
                     System.out.println(response);
                     sureparks = responseJSON.getJSONArray("sureparks");
@@ -477,6 +486,7 @@ public class MainActivity extends AppCompatActivity
             super.onPostExecute(s);
             loc_names=new String[ct];
             loc_ids = new String[ct];
+            System.out.println("count number " + ct);
             loc_select_state =1;
             System.out.println(loc_ids.length);
             for(int i=0;i<ct;i++){
@@ -556,8 +566,75 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-
+            System.out.println("main rev id " + rev_id);
+            if(rev_id!=null) {
+                if (!rev_id.equals("null")) {
+                    HttpGetParkinglot getParkinglot = new HttpGetParkinglot();
+                    getParkinglot.execute();
+                }
+            }
         }
     }
 
+    public class HttpGetParkinglot extends AsyncTask<String, Void, String> {
+        @Override
+        public String doInBackground(String... params) {
+            try {
+                URL url = new URL(MainActivity.address+"sureparks/"+MainActivity.ioc_id);
+                HttpURLConnection   conn    = null;
+                OutputStream          os   = null;
+                InputStream           is   = null;
+                ByteArrayOutputStream baos = null;
+                conn = (HttpURLConnection)url.openConnection();
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Authorization", MainActivity.token_type+" "+ MainActivity.access_token);
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoInput(true);
+                conn.connect();
+
+                String response;
+
+                int responseCode = conn.getResponseCode();
+                System.out.println("Input getparkinglot: " + responseCode);
+
+                if(responseCode == HttpURLConnection.HTTP_OK) {
+
+                    is = conn.getInputStream();
+                    baos = new ByteArrayOutputStream();
+                    byte[] byteBuffer = new byte[1024];
+                    byte[] byteData = null;
+                    int nLength = 0;
+                    while((nLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
+                        baos.write(byteBuffer, 0, nLength);
+                    }
+                    byteData = baos.toByteArray();
+
+                    response = new String(byteData);
+                    System.out.println("Input getparkinglot: " + response);
+                    JSONObject responseJSON = new JSONObject(response);
+
+                    MainActivity.parkinglotname = (String) responseJSON.get("parkingLotName");
+
+                } else if(responseCode == HttpURLConnection.HTTP_FORBIDDEN){
+                    System.out.println("FOBIDDEN");
+                } else if(responseCode == HttpURLConnection.HTTP_UNAUTHORIZED){
+                    System.out.println("UNAUTHORIZED");
+                }
+                conn.disconnect();
+            } catch (Exception e) {
+                System.out.println("error");
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+        }
+    }
 }

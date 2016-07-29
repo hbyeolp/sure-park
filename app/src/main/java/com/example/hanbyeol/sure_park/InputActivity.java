@@ -59,6 +59,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_input);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        this.setTitle(MainActivity.parkinglotname);
         edit_e_mail=(EditText) findViewById(R.id.input_email);
         edit_card_num1= (EditText) findViewById(R.id.input_card1);
         edit_card_num2= (EditText) findViewById(R.id.input_card2);
@@ -75,6 +76,17 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
         edit_phone.setClickable(false);
         edit_date.setFocusable(false);
         edit_date.setClickable(false);
+        edit_e_mail.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    edit_card_num1.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(edit_card_num1, 0);
+                }
+                return false;
+            }
+        });
 
         edit_card_num1.addTextChangedListener(new TextWatcher() {
 
@@ -397,7 +409,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
             case R.id.button_reserve:
                 if(available_card==1) {
                     AlertDialog.Builder alert_confirm = new AlertDialog.Builder(this);
-                    alert_confirm.setMessage("Would you like to reserve the parking lot?").setCancelable(false).setPositiveButton("No",
+                    alert_confirm.setMessage("Would you like to reserve a parking spot?").setCancelable(false).setPositiveButton("No",
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -565,7 +577,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                 String response;
 
                 int responseCode = conn.getResponseCode();
-
+                System.out.println("card valid code"+responseCode);
                 if(responseCode == HttpURLConnection.HTTP_OK) {
 
                     is = conn.getInputStream();
@@ -579,6 +591,7 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                     byteData = baos.toByteArray();
 
                     response = new String(byteData);
+                    System.out.println("card valid response"+response);
 
                     JSONObject responseJSON = new JSONObject(response);
                     cardResult = (String) responseJSON.get("result");
@@ -739,6 +752,19 @@ public class InputActivity extends AppCompatActivity implements View.OnClickList
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // 'YES'
+                            }
+                        });
+                AlertDialog alert = alert_confirm.create();
+                alert.show();
+            }
+            else if(revResult.equals("fail0")){
+                AlertDialog.Builder alert_confirm = new AlertDialog.Builder(InputActivity.this);
+                alert_confirm.setMessage("Reservation Fail"+"\n"+MainActivity.parkinglotname+" has no available parking spots`").setCancelable(false).setPositiveButton("Confirm",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // 'YES'
+                                revResult="fail";
                             }
                         });
                 AlertDialog alert = alert_confirm.create();

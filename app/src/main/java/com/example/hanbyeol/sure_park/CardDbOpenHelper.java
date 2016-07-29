@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 
+import java.util.ArrayList;
+
 /**
  * Created by hanbyeol on 2016-07-26.
  */
@@ -21,7 +23,6 @@ public class CardDbOpenHelper {
     private Context mCtx;
     private class DatabaseHelper extends SQLiteOpenHelper {
 
-        // ?앹꽦??
         public DatabaseHelper(Context context, String name,
                               SQLiteDatabase.CursorFactory factory, int version) {
 
@@ -29,14 +30,12 @@ public class CardDbOpenHelper {
 
         }
 
-        // 理쒖큹 DB瑜?留뚮뱾???쒕쾲留??몄텧?쒕떎.
         @Override
         public void onCreate(SQLiteDatabase db) {
             System.out.println(DataBases.CardCreateDB._CREATE);
             db.execSQL(DataBases.CardCreateDB._CREATE);
         }
 
-        // 踰꾩쟾???낅뜲?댄듃 ?섏뿀??寃쎌슦 DB瑜??ㅼ떆 留뚮뱾??以??
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             db.execSQL("DROP TABLE IF EXISTS "+_TABLENAME);
@@ -58,23 +57,23 @@ public class CardDbOpenHelper {
         mDB.close();
     }
 
-    void Delete(int id) {
-        int result = mDB.delete(_TABLENAME, "_id=?", new String[] {Integer.toString(id)});
+    void Delete(String cardnumber) {
+        int result = mDB.delete(_TABLENAME, "cardNumber=?", new String[] {cardnumber});
         System.out.println("card db delete");
     }
 
     void Update (String cardNumber, String cardFirstname, String cardLastname, String cardExpirationMonth, String cardExpirationYear, String cardValidationCode) {
         ContentValues values = new ContentValues();
         values.put("cardFirstname", cardFirstname);
-        values.put("cardLastname", cardLastname);         // 諛붽?媛?
-        values.put("cardExpirationMonth", cardExpirationMonth); // 諛붽?媛?
-        values.put("cardExpirationYear", cardExpirationYear); // 諛붽?媛?
-        values.put("cardValidationCode", cardValidationCode); // 諛붽?媛?
+        values.put("cardLastname", cardLastname);
+        values.put("cardExpirationMonth", cardExpirationMonth);
+        values.put("cardExpirationYear", cardExpirationYear);
+        values.put("cardValidationCode", cardValidationCode);
 
         int result = mDB.update(_TABLENAME,
-                values,    // 萸먮씪怨?蹂寃쏀븷吏 ContentValues ?ㅼ젙
-                "cardNumber=?", // 諛붽? ??ぉ??李얠쓣 議곌굔??
-                new String[]{cardNumber});// 諛붽? ??ぉ?쇰줈 李얠쓣 媛?String 諛곗뿴
+                values,
+                "cardNumber=?",
+                new String[]{cardNumber});
     }
 
     int Count () {
@@ -119,6 +118,7 @@ public class CardDbOpenHelper {
             cardExpirationYears[0]=c.getString(5);
             cardValidationCodes[0]=c.getString(6);
             arrayAdapter.addItem(cardNumbers[0],cardFirstnames[0]+cardLastnames[0],cardExpirationMonths[0]+"/"+cardExpirationYears[0], cardValidationCodes[0]);
+            arrayAdapter.notifyDataSetChanged();
             while (c.moveToNext()) {
                 cardNumbers[a]=c.getString(1);
                 cardFirstnames[a]=c.getString(2);
@@ -127,6 +127,7 @@ public class CardDbOpenHelper {
                 cardExpirationYears[a]=c.getString(5);
                 cardValidationCodes[a]=c.getString(6);
                 arrayAdapter.addItem(cardNumbers[a],cardFirstnames[a]+cardLastnames[a],cardExpirationMonths[a]+"/"+cardExpirationYears[a], cardValidationCodes[a]);
+                arrayAdapter.notifyDataSetChanged();
                 a++;
             }
         }
